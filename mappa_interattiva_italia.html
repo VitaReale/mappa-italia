@@ -5,23 +5,28 @@
   <title>Mappa Interattiva Italia</title>
   
 <style>
-    path:hover {
-        fill: orange !important;
-        cursor: pointer;
-    }
-  /* Stile per il tooltip personalizzato */
+  /* Colore di base per tutte le regioni */
+  path {
+    fill: #647F76;
+  }
+
+  /* Colore al passaggio del mouse */
+  path:hover {
+    fill: #CAA15A !important; /* !important assicura che questo stile sovrascriva altri se necessario */
+    cursor: pointer;
+  }
+
+  /* Stile per il tooltip personalizzato (invariato) */
   #tooltip {
-    position: absolute; /* Posizionamento assoluto per seguire il mouse */
-    display: none; /* Nascosto di default */
+    position: absolute;
+    display: none;
     background-color: #333;
     color: #fff;
     padding: 5px 10px;
     border-radius: 4px;
     font-size: 14px;
-    /* Impedisce al tooltip di intercettare gli eventi del mouse,
-       il che potrebbe causare problemi con mouseleave sull'SVG */
     pointer-events: none; 
-    z-index: 1000; /* Assicura che sia sopra gli altri elementi */
+    z-index: 1000;
   }
 </style>
 
