@@ -60,69 +60,149 @@
    <div id="tooltip"></div>
 
 <script>
-  // Aspetta che il DOM sia completamente caricato
-  document.addEventListener('DOMContentLoaded', function() {
-    const paths = document.querySelectorAll('svg path');
-    const tooltip = document.getElementById('tooltip');
+    document.addEventListener('DOMContentLoaded', function() {
+        const paths = document.querySelectorAll('svg path');
+        const tooltip = document.getElementById('tooltip'); // Assicurati che il tooltip esista ancora
+        const popupOverlay = document.getElementById('popupOverlay');
+        const infoPopup = document.getElementById('infoPopup');
+        const popupTitle = document.getElementById('popupTitle');
+        const popupContent = document.getElementById('popupContent');
+        const closePopupBtn = document.getElementById('closePopupBtn');
 
-    // === IMPORTANTE: COMPLETA QUESTA MAPPA! ===
-    // Mappa degli ID delle regioni ai link esterni.
-    // Devi inserire l'ID corretto per ogni regione (come specificato nel tuo SVG)
-    // e l'URL a cui vuoi che linki.
-    const regionLinks = {
-      "IT_65": "https://it.wikipedia.org/wiki/Abruzzo",
-      "IT-77": "https://it.wikipedia.org/wiki/Basilicata",
-      "IT-78": "https://it.wikipedia.org/wiki/Calabria", // Assicurati che l'ID sia corretto
-      "IT-72": "https://it.wikipedia.org/wiki/Campania",
-      "IT-45": "https://it.wikipedia.org/wiki/Emilia-Romagna",
-      "IT-36": "https://it.wikipedia.org/wiki/Friuli-Venezia_Giulia",
-      "IT-62": "https://it.wikipedia.org/wiki/Lazio",
-      "IT-42": "https://it.wikipedia.org/wiki/Liguria",
-      "IT-25": "https://it.wikipedia.org/wiki/Lombardia",
-      "IT-57": "https://it.wikipedia.org/wiki/Marche",
-      "IT-67": "https://it.wikipedia.org/wiki/Molise",
-      "IT-21": "https://it.wikipedia.org/wiki/Piemonte",
-      "IT-75": "https://it.wikipedia.org/wiki/Puglia",
-      "IT-88": "https://it.wikipedia.org/wiki/Sardegna", // L'ID 'IT-88' è un esempio
-      "IT-82": "https://it.wikipedia.org/wiki/Sicilia",
-      "IT-52": "https://it.wikipedia.org/wiki/Toscana",
-      "IT-32": "https://it.wikipedia.org/wiki/Trentino-Alto_Adige", // Spesso diviso o con ID specifici
-      "IT-55": "https://it.wikipedia.org/wiki/Umbria",
-      "IT-23": "https://it.wikipedia.org/wiki/Valle_d%27Aosta",
-      "IT-34": "https://it.wikipedia.org/wiki/Veneto"
-    };
+        // === MAPPA DEI CONTENUTI DEI POPUP ===
+        // Invece di link esterni, qui definisci il titolo e il contenuto per ogni regione.
+        const regionInfo = {
+            "IT_65": {
+                title: "Abruzzo",
+                content: "L'Abruzzo è una regione dell'Italia centrale con una ricca storia e paesaggi mozzafiato, dalle montagne dell'Appennino ai parchi nazionali."
+            },
+            "IT-77": {
+                title: "Basilicata",
+                content: "La Basilicata è famosa per i Sassi di Matera, patrimonio UNESCO, e per la sua natura incontaminata, tra cui il Parco Nazionale del Pollino."
+            },
+            "IT-78": {
+                title: "Calabria",
+                content: "La Calabria è la punta dello stivale italiano, nota per le sue coste mozzafiato, il mare cristallino e i borghi antichi arroccati."
+            },
+            "IT-72": {
+                title: "Campania",
+                content: "La Campania vanta città come Napoli, il Vesuvio, gli scavi di Pompei ed Ercolano, e le splendide isole di Capri e Ischia."
+            },
+            "IT-45": {
+                title: "Emilia-Romagna",
+                content: "L'Emilia-Romagna è il cuore della Motor Valley e della Food Valley, con città d'arte come Bologna e Ravenna e una tradizione culinaria unica."
+            },
+            "IT-36": {
+                title: "Friuli-Venezia Giulia",
+                content: "Il Friuli-Venezia Giulia è una regione di confine, con paesaggi che vanno dalle Alpi al mare, e un'identità culturale ricca e diversificata."
+            },
+            "IT-62": {
+                title: "Lazio",
+                content: "Il Lazio ospita Roma, la Capitale d'Italia, con i suoi monumenti storici, ma anche laghi vulcanici, borghi medievali e il litorale laziale."
+            },
+            "IT-42": {
+                title: "Liguria",
+                content: "La Liguria è una stretta fascia di terra tra montagne e mare, famosa per le Cinque Terre, Portofino e il pesto genovese."
+            },
+            "IT-25": {
+                title: "Lombardia",
+                content: "La Lombardia, con Milano come capitale della moda e della finanza, offre anche laghi alpini, città d'arte e un'economia dinamica."
+            },
+            "IT-57": {
+                title: "Marche",
+                content: "Le Marche sono una regione collinare che si estende dalle montagne al mare Adriatico, con borghi storici, parchi naturali e spiagge affascinanti."
+            },
+            "IT-67": {
+                title: "Molise",
+                content: "Il Molise è una delle regioni più piccole e meno conosciute d'Italia, un gioiello nascosto con paesaggi montani e costieri incontaminati."
+            },
+            "IT-21": {
+                title: "Piemonte",
+                content: "Il Piemonte è una regione alpina che offre paesaggi montani, i laghi Maggiore e d'Orta, e Torino, antica capitale e città industriale."
+            },
+            "IT-75": {
+                title: "Puglia",
+                content: "La Puglia è famosa per il suo mare caraibico, i trulli di Alberobello, le masserie e l'ottima gastronomia, meta di turismo in crescita."
+            },
+            "IT-88": { // ID esempio per la Sardegna, verifica il tuo SVG
+                title: "Sardegna",
+                content: "La Sardegna è un'isola con spiagge di sabbia bianca, mare cristallino e un entroterra montuoso e selvaggio, ricco di nuraghi e tradizioni."
+            },
+            "IT-82": {
+                title: "Sicilia",
+                content: "La Sicilia, l'isola più grande del Mediterraneo, offre un patrimonio culturale immenso, l'Etna, spiagge mozzafiato e una cucina rinomata."
+            },
+            "IT-52": {
+                title: "Toscana",
+                content: "La Toscana è la patria del Rinascimento, con città d'arte come Firenze, Siena e Pisa, e paesaggi collinari iconici, vigneti e uliveti."
+            },
+            "IT-32": { // ID esempio per il Trentino-Alto Adige
+                title: "Trentino-Alto Adige",
+                content: "Il Trentino-Alto Adige è una regione alpina, ideale per sport invernali ed estivi, con paesaggi mozzafiato delle Dolomiti e una cultura ricca."
+            },
+            "IT-55": {
+                title: "Umbria",
+                content: "L'Umbria, il 'cuore verde d'Italia', è famosa per le sue città medievali come Assisi e Orvieto, la sua campagna lussureggiante e le tradizioni spirituali."
+            },
+            "IT-23": {
+                title: "Valle d'Aosta",
+                content: "La Valle d'Aosta è la più piccola regione d'Italia, incastonata tra le vette più alte d'Europa, ideale per lo sci e le escursioni montane."
+            },
+            "IT-34": {
+                title: "Veneto",
+                content: "Il Veneto ospita Venezia, Verona e Padova, ma anche le Dolomiti, le colline del Prosecco e una ricca tradizione artistica e culturale."
+            }
+            // Aggiungi qui tutte le tue regioni con titolo e contenuto desiderato
+        };
 
-    paths.forEach(path => {
-      // Funzionalità Tooltip
-      path.addEventListener('mousemove', function(event) {
-        const title = path.getAttribute('title');
-        if (title) {
-          tooltip.innerHTML = title;
-          tooltip.style.display = 'block';
-          // Posiziona il tooltip vicino al cursore (+10px di offset per non coprirlo)
-          tooltip.style.left = (event.pageX + 10) + 'px';
-          tooltip.style.top = (event.pageY + 10) + 'px';
-        }
-      });
+        paths.forEach(path => {
+            // Funzionalità Tooltip (rimane invariata)
+            path.addEventListener('mousemove', function(event) {
+                const title = path.getAttribute('title');
+                if (title && tooltip) { // Controllo aggiunto per sicurezza
+                    tooltip.innerHTML = title;
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = (event.pageX + 10) + 'px';
+                    tooltip.style.top = (event.pageY + 10) + 'px';
+                }
+            });
 
-      path.addEventListener('mouseleave', function() {
-        tooltip.style.display = 'none';
-        tooltip.innerHTML = ''; // Svuota il tooltip per sicurezza
-      });
+            path.addEventListener('mouseleave', function() {
+                if (tooltip) { // Controllo aggiunto per sicurezza
+                    tooltip.style.display = 'none';
+                    tooltip.innerHTML = '';
+                }
+            });
 
-      // Funzionalità Click per Link Esterno
-      path.addEventListener('click', function() {
-        const regionId = path.getAttribute('id');
-        if (regionId && regionLinks[regionId]) {
-          window.open(regionLinks[regionId], '_blank'); // Apre in una nuova scheda
-          // Per aprire nella stessa scheda, usa:
-          // window.location.href = regionLinks[regionId];
-        } else if (regionId) {
-          console.warn('Link non trovato per la regione con ID:', regionId, '- Controlla l\'oggetto regionLinks.');
-        }
-      });
+            // --- Funzionalità Click per aprire il Popup ---
+            path.addEventListener('click', function() {
+                const regionId = path.getAttribute('id');
+                if (regionId && regionInfo[regionId]) {
+                    // Riempi il popup con le informazioni della regione
+                    popupTitle.textContent = regionInfo[regionId].title;
+                    popupContent.textContent = regionInfo[regionId].content;
+
+                    // Mostra il popup e l'overlay
+                    popupOverlay.style.display = 'block';
+                    infoPopup.style.display = 'block';
+                } else if (regionId) {
+                    console.warn('Informazioni non trovate per la regione con ID:', regionId, '- Controlla l\'oggetto regionInfo.');
+                }
+            });
+        });
+
+        // Event listener per chiudere il popup tramite il pulsante
+        closePopupBtn.addEventListener('click', function() {
+            popupOverlay.style.display = 'none';
+            infoPopup.style.display = 'none';
+        });
+
+        // Event listener per chiudere il popup cliccando sull'overlay
+        popupOverlay.addEventListener('click', function() {
+            popupOverlay.style.display = 'none';
+            infoPopup.style.display = 'none';
+        });
     });
-  });
 </script>
 </body>
 </html>
