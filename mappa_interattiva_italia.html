@@ -60,10 +60,14 @@
    <div id="tooltip"></div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log("SVG iFrame Code: DOMContentLoaded. Initializing map."); // Log 11
-        const paths = document.querySelectorAll('svg path');
-        const tooltip = document.getElementById('tooltip');
+        // Abbiamo rimosso l'addEventListener per DOMContentLoaded
+    console.log("SVG iFrame Code: Script loaded and executing directly."); // Log di test immediato
+
+    const paths = document.querySelectorAll('svg path');
+    console.log("SVG iFrame Code: Found paths:", paths.length); // Log per vedere quanti path trova
+
+    const tooltip = document.getElementById('tooltip');
+    console.log("SVG iFrame Code: Found tooltip element:", !!tooltip); // Log per vedere se trova il tooltip
 
         // === MAPPA DEI CONTENUTI DELLE REGIONI (NECESSARIA PER PASSARE I DATI A WIX) ===
         // Questo oggetto deve rimanere qui perché il codice all'interno dell'iframe lo usa per recuperare i dati.
@@ -169,53 +173,55 @@
               lightboxName: "VenetoLightbox",
             }
         };
+   console.log("SVG iFrame Code: regionInfo loaded.", regionInfo); // Log per vedere l'oggetto
 
-        paths.forEach(path => {
-            // Funzionalità Tooltip (questa parte rimane invariata)
-            path.addEventListener('mousemove', function(event) {
-                const title = path.getAttribute('title');
-                if (title && tooltip) {
-                    tooltip.innerHTML = title;
-                    tooltip.style.display = 'block';
-                    tooltip.style.left = (event.pageX + 10) + 'px';
-                    tooltip.style.top = (event.pageY + 10) + 'px';
-                }
-            });
+    paths.forEach(path => {
+        path.addEventListener('mousemove', function(event) {
+            const title = path.getAttribute('title');
+            if (title && tooltip) {
+                tooltip.innerHTML = title;
+                tooltip.style.display = 'block';
+                tooltip.style.left = (event.pageX + 10) + 'px';
+                tooltip.style.top = (event.pageY + 10) + 'px';
+            }
+        });
 
-            path.addEventListener('mouseleave', function() {
-                if (tooltip) {
-                    tooltip.style.display = 'none';
-                    tooltip.innerHTML = '';
-                }
-            });
+        path.addEventListener('mouseleave', function() {
+            if (tooltip) {
+                tooltip.style.display = 'none';
+                tooltip.innerHTML = '';
+            }
+        });
 
-            // --- Funzionalità Click per comunicare con Wix Studio ---
-            path.addEventListener('click', function() {
-                const regionId = path.getAttribute('id');
-                const info = regionInfo[regionId];
+        path.addEventListener('click', function() {
+            const regionId = path.getAttribute('id');
+            const info = regionInfo[regionId];
 
-              console.log("SVG iFrame Code: Region clicked. ID:", regionId, "Info:", info); // Log 12
+            console.log("SVG iFrame Code: Region clicked. ID:", regionId, "Info:", info); 
 
-                    if (info && info.lightboxName) { 
-                    console.log("SVG iFrame Code: Sending message to parent. Payload:", {
-                        type: 'regionClicked',
-                        payload: {
-                            title: info.title,
-                            content: info.content,
-                            lightboxNameToOpen: info.lightboxName
-                        }
-                    }); // Log 13
+            if (info && info.lightboxName) { 
+                console.log("SVG iFrame Code: Sending message to parent. Payload:", {
+                    type: 'regionClicked',
+                    payload: {
+                        title: info.title,
+                        content: info.content,
+                        lightboxNameToOpen: info.lightboxName 
+                    }
+                });
 
-                    window.parent.postMessage({
-                        type: 'regionClicked',
-                        payload: {
-                            title: info.title,
-                            content: info.content,
-                            lightboxNameToOpen: info.lightboxName 
-                        }
-                    }, '*');
-                } else if (regionId) {
-                    console.warn('SVG iFrame Code: Information or Lightbox name not found for region ID:', regionId, '- Check regionInfo object and lightboxName property.');
-                }
-            });
+                window.parent.postMessage({
+                    type: 'regionClicked',
+                    payload: {
+                        title: info.title,
+                        content: info.content,
+                        lightboxNameToOpen: info.lightboxName 
+                    }
+                }, '*');
+            } else if (regionId) {
+                console.warn('SVG iFrame Code: Information or Lightbox name not found for region ID:', regionId, '- Check regionInfo object and lightboxName property.');
+            }
+        });
+    });
+    console.log("SVG iFrame Code: Event listeners attached."); // Log finale
+</script>
 </html>
