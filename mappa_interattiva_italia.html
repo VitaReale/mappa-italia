@@ -61,6 +61,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+      console.log("SVG iFrame Code: DOMContentLoaded. Initializing map."); // Log 11
         const paths = document.querySelectorAll('svg path');
         const tooltip = document.getElementById('tooltip');
 
@@ -193,20 +194,28 @@
                 const regionId = path.getAttribute('id');
                 const info = regionInfo[regionId];
 
-                if (info) {
-                    // Invia i dati della regione alla pagina genitore (Wix Studio)
-                    // Utilizziamo window.parent.postMessage per comunicare con il frame principale di Wix.
-                    // 'regionClicked' è il tipo di messaggio, 'info' sono i dati.
+              console.log("SVG iFrame Code: Region clicked. ID:", regionId, "Info:", info); // Log 12
+
+                    if (info && info.lightboxName) { 
+                    console.log("SVG iFrame Code: Sending message to parent. Payload:", {
+                        type: 'regionClicked',
+                        payload: {
+                            title: info.title,
+                            content: info.content,
+                            lightboxNameToOpen: info.lightboxName
+                        }
+                    }); // Log 13
+
                     window.parent.postMessage({
                         type: 'regionClicked',
-                        payload: info
-                    }, '*'); // '*' permette la comunicazione con qualsiasi origine, per maggiore sicurezza usa il dominio di Wix
-                } else {
-                    console.warn('Informazioni non trovate per la regione con ID:', regionId, '- Controlla l\'oggetto regionInfo.');
+                        payload: {
+                            title: info.title,
+                            content: info.content,
+                            lightboxNameToOpen: info.lightboxName 
+                        }
+                    }, '*');
+                } else if (regionId) {
+                    console.warn('SVG iFrame Code: Information or Lightbox name not found for region ID:', regionId, '- Check regionInfo object and lightboxName property.');
                 }
             });
-        });
-    });
-</script>
-</body>
 </html>
