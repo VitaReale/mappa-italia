@@ -28,57 +28,69 @@
     pointer-events: none; 
     z-index: 1000;
   }
- /* NUOVI STILI PER IL BOX DI TESTO DINAMICO */
-        #regionInfoBox {
-            display: none; /* Inizialmente nascosto */
-            position: absolute; /* O 'fixed' se vuoi che segua lo scroll */
-            top: 50px; /* Regola la posizione verticale */
-            left: 50%; /* Centra orizzontalmente */
-            transform: translateX(-50%); /* Centra orizzontalmente con precisione */
-            width: 400px; /* Larghezza del box */
-            max-width: 90%; /* Per reattività su schermi più piccoli */
-            padding: 20px;
-            background-color: #f0f0f0; /* Sfondo del box */
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            z-index: 9998; /* Assicurati che sia sopra la mappa e il tooltip */
-            font-family: Arial, sans-serif; /* Font leggibile */
-            color: #333; /* Colore del testo */
-        }
 
-        #regionInfoBox h3 {
-            margin-top: 0;
-            color: #0056b3; /* Colore titolo */
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
+  /* Stili per il contenitore generale dei box regione */
+  #regionBoxesContainer {
+      position: absolute; /* O 'fixed' per seguir scroll */
+      top: 50px; /* Posizione rispetto al top dell'iframe */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 400px;
+      max-width: 90%;
+      z-index: 9998; /* Assicurati che sia sopra la mappa e il tooltip */
+      font-family: Arial, sans-serif;
+      color: #333;
+  }
 
-        #regionInfoBox p {
-            line-height: 1.6;
-            font-size: 16px;
-        }
+  /* Stili per ogni singolo box regione */
+  .region-box {
+      display: none; /* Inizialmente tutti nascosti */
+      padding: 20px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: opacity 0.3s ease-in-out; /* Per un effetto di dissolvenza */
+      opacity: 0; /* Per la transizione iniziale */
+      position: relative; /* Necessario per posizionare il bottone di chiusura */
+  }
+  /* Quando un box è attivo, mostralo */
+  .region-box.active {
+      display: block;
+      opacity: 1;
+  }
 
-        #closeButton {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #888;
-        }
-        #closeButton:hover {
-            color: #333;
-        }
-  
+  .region-box h3 {
+      margin-top: 0;
+      color: #0056b3;
+      font-size: 20px;
+      margin-bottom: 10px;
+  }
+
+  .region-box p {
+      line-height: 1.6;
+      font-size: 16px;
+  }
+
+  .close-button { /* Stile per i bottoni di chiusura in ogni box */
+      position: absolute; /* Relativo al .region-box */
+      top: 10px;
+      right: 10px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #888;
+  }
+  .close-button:hover {
+      color: #333;
+  }
 </style>
-
 </head>
 <body>
-  <div style="max-width:100%; overflow:auto;">
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://mapsvg.com" ns1:geoViewBox="6.624486 47.092916 18.521301 35.490303" width="610.30981" height="792.58575">
+
+<div id="tooltip"></div>
+    <svg width="800" height="600" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
 
   <path d="m 374.27021,304.03051 1.36,6.34 2.24,5.51 6.27,11.18 7.01,7.71 8.24,6.15 0.87,2.33 3.67,3.53 0.33,1.35 5.56,3.7 5.16,1.83 0.21,4.85 3.43,2.43 0,0 -1.17,1.85 0.91,0.84 -2.84,1.96 -2.3,2.84 -0.82,3.1 -2.36,1.66 -1.72,3.73 -4.76,5.13 -2.04,-0.37 0.79,-0.64 -1.07,-4.29 -1.1,-1.07 -2.44,-1.62 -1.05,1.32 -0.57,-0.22 -0.98,-2.19 -1.24,0.13 -0.94,-1.26 -2.91,2.38 -1.43,2.22 -2.22,0.15 -0.42,0.9 1.25,3.55 1.52,0.89 -0.42,1.03 -0.85,-0.13 -0.25,-1.01 -0.67,1.24 -1.99,0.05 -0.63,2.64 -0.79,-2.07 -1.16,0.09 -0.87,2.4 -1.33,0.05 -0.28,1.46 -1.87,-0.98 -2.1,0.52 0,0 -2.49,-3.27 -1.96,0.19 -2.4,-1.41 -1.03,0.65 -1.33,-0.4 -1.75,-3.31 -1.32,0.73 -1.07,-1.18 -1.78,-0.49 -1.06,2.09 -4.05,1.35 -1.48,-0.93 -0.73,-1.81 -1.84,-0.43 -1.48,-1.43 -1.73,-0.7 -1.4,1.36 -1,-3.63 1.28,-2.29 -1,-1.41 -1.01,0.18 -1.98,-2.28 -0.9,0.37 -7.65,-4.49 -2.03,-0.72 -0.02,1.24 -2.38,-0.64 -1.41,-2.25 0.15,-4.92 0.78,0.36 2.08,-1.78 0.05,-2.39 1.73,-0.13 6.56,3.53 1.24,-0.77 1.69,0.62 1.07,-2.23 1.5,-0.29 -0.53,-0.71 1.83,-0.33 -1.93,-1.22 -0.3,-1.63 -2.43,-0.84 -2.58,-2.54 -0.65,-3.28 -3.74,-2.48 2.08,-2.33 -3.99,-3.74 3.18,-2.42 -0.1,-2.38 -1,-1.86 1.03,-0.58 0.76,-2.76 2.75,1.04 0.61,-0.73 1.35,0 0.58,0.98 1.5,-0.77 2.26,0.31 1.35,-1.17 0.76,-3.43 -1.99,-0.63 -1.15,-1.37 0.54,-1.68 0,0 0,0 0,0 0,0 0,0 1.66,0.48 1.88,-1.33 0.57,0.46 0.6,-2.37 2.37,-0.39 0.3,-2.49 1.34,-1.49 0.24,-1.44 2.08,1.13 2.37,-1.11 0.67,0.94 1.35,-0.17 2.01,-0.94 0.46,-2.21 0.68,-0.38 2.78,-0.18 2.11,-1.41 4.99,-1.07 0,0 z" title="Abruzzo" id="IT_65" />
   <path d="m 457.43021,430.14051 -0.33,-1.23 1.34,-1.23 1.95,-0.38 4.65,0.78 2.51,-0.9 1.45,1.05 1.69,-0.91 -0.16,-0.95 1.67,-0.43 -0.18,-0.76 0.82,0.29 1.42,-0.85 2.3,1.65 1.74,0.3 0.24,1.03 1.26,0.3 0.61,2.35 0.62,-0.42 1.84,1.5 -0.64,1.04 0.3,1.55 -1.79,2.05 -1.51,-0.27 0.61,1.13 5.59,2.38 1.59,1.51 2.14,-1.96 2,0.65 2.94,6.46 6.56,6.05 0.78,1.74 1.53,0.42 3.48,-4.04 2.04,2.47 -0.06,-1.89 0.97,-0.26 0.85,1.33 0.11,-1.74 1.69,0.73 1.01,-0.64 0.17,0.99 1.17,0.7 0.54,-0.74 2.92,2.22 -1.03,0.51 1.22,1.41 -0.9,3.62 0.92,2.05 -0.63,0.46 -0.43,2.89 0.96,1.01 -0.44,0.81 1.16,0.88 -0.96,2.08 0.86,0.94 1.7,-0.43 1.77,1.07 0.37,1.62 1.74,1.47 0.78,1.86 0,0 -3.94,5.64 -4.81,10.36 -2.29,1.67 0,0 -2.72,-0.95 -3.12,0.97 -3.08,-1.02 -1.91,0.37 -0.66,-1.11 -0.63,1.47 0.22,2.84 -1.03,2.22 0.26,2 -3.05,5.44 1.11,1.14 -0.44,1.32 -2.14,-2.39 -2,-0.18 -2.93,0.66 -0.02,1.75 -2.78,-1.27 -1.04,1.08 -4.8,0.26 -1.55,-1.74 0.37,-0.62 -0.85,-1.6 1.24,-2.23 -1.16,-0.32 -1.49,0.85 -0.69,-0.96 -1.85,-0.3 -1.43,1.23 -0.62,-0.87 -0.93,0.49 -0.9,-0.94 -1.68,0.18 -2.35,2.53 -0.95,2.6 0,0 -1.79,-3.55 -2.1,-1.92 -0.14,-1.48 -1.68,-0.98 0,0 1.69,-1.01 -1.27,-1.38 1.21,-0.34 1.56,-2.12 -0.32,-2.91 1.62,-1.65 -0.14,-1 3.47,-1.48 -0.52,-1.23 0.93,-0.83 -0.04,-1.42 -0.61,-1.15 -2.93,-0.85 -0.14,-1.32 -1.64,-1.51 -0.05,-2.56 -2.1,-0.76 -1.6,-2.14 -2.06,-1.03 -0.48,-1.73 -2.17,-1.71 0.72,-1.08 -1.35,-3.21 0.7,-0.82 -4.35,-2.63 0.73,-2.02 1.65,-1.01 0.06,-0.81 -5.93,-3.85 0.17,-4.85 -0.82,-0.07 0.22,-1.18 -2.06,-1.27 2.1,-0.15 0.12,-2.14 -1.02,-0.52 0.43,-0.66 4.79,1.08 0.64,-0.35 -0.23,-1.16 2.96,-1.29 2.26,-5.87 z" title="Basilicata" id="IT-77" />
@@ -101,17 +113,131 @@
   <path d="m 49.07021,82.450505 0.58,1.17 3.82,-0.54 0.91,1.48 1.32,0.54 0.64,1.93 1.6,-1.15 2.47,1.61 1.17,-0.66 2.07,0.73 0,0 0.7,4.06 -0.7,5.05 1.71,3.1 1.62,0.600005 0.36,1.2 -1.66,2.83 1.82,3.73 -1.2,0.24 -0.73,3.04 -1.01,-0.65 -2.64,0.2 -4.89,3.47 -0.68,-0.61 -2.32,0.38 -1.97,-1.3 -1.41,0.66 -0.13,-0.87 -2.01,-1.25 -2.08,1.13 -1.85,-0.47 -1.23,0.39 -0.93,1.57 -3.54,2.84 -0.96,-0.67 -1.88,0.89 -2.8,0.07 -2.39,3.01 -3.07,-1.07 -0.9,0.68 -0.36,-2.85 -1.77,3.56 0,0 -2.72,-0.39 0.27,-1.63 -2.79,-0.76 -0.23,-5.06 -0.95,-1 1.17,-3.79 -1.74,-1.05 -2.6,0.18 -0.52,-1.45 -2.45,-0.92 -2.5199999,-2.91 0.3699999,-1.2 -0.7599999,-2.950005 1.0099999,-4.14 1.19,-0.34 0.99,0.64 0.73,-1.19 1.79,0.62 1.49,-0.47 0.53,-1.03 2.31,-0.81 0.32,-2.06 2.06,-1.74 3.16,4.8 2.57,-1.55 1.86,1.5 1.24,-2.11 2.13,-0.06 1.83,-2.42 4.72,1.84 4.45,-2.8 -0.04,-0.99 1.35,-1.05 2.22,0.42 0.3,-2.13 z" title="Valle d'Aosta" id="IT-23" />
   <path d="m 303.90021,157.45051 -1.35,0.77 0.94,-1.05 -0.9,-0.37 1.6,-0.18 -0.29,0.83 z m -1.64,-2.1 1.19,0.9 -2.37,0.53 0.62,-1.75 0.56,0.32 z m -0.37,-124.080005 2.84,1.95 5.54,-0.56 2.07,0.74 0.89,1.09 0,0 -0.19,1.8 0.97,1.66 -0.7,2.27 0.88,1.16 -2.55,0.06 -3.46,2.18 -0.12,0.94 1.23,0.8 0.4,1.74 -1.82,-0.78 -1.04,0.79 -1.85,-0.79 -1.57,1.25 -0.41,-0.43 -1.48,2.04 -0.28,1.75 -2,1.76 0.32,1.39 -0.6,-0.27 0.18,0.6 -1.83,0.93 -0.33,2.02 -1.91,-0.27 -1.04,0.84 0.04,1.99 -1.8,1.89 2.12,2.85 2.08,-0.01 0.26,1.58 1.84,-0.1 0.3,2.13 2.42,1.95 -0.45,3.58 -2.9,1.96 -1.77,2.81 0.92,0.8 0.71,2.6 0.02,3.47 1.43,0.04 1.05,1.51 1.48,0.01 1.26,4.53 1.39,1.26 -0.21,1.2 2,1.05 0.68,-1.6 1.24,0.66 0.12,0.9 1.12,0.52 0.05,1.62 3.88,-3.59 0.67,0.68 1.98,-2.1 1.13,0.84 -0.43,1 0.63,0.73 0.55,-1.04 2.17,-1.08 0.64,0.07 -0.4,1.1 1.25,1.14 1.52,-0.94 0.49,1.09 1.55,-0.5 -0.45,-1.41 0.59,-0.24 0.58,1.58 -0.04,0.31 0.4,0.37 -0.17,0.82 0.82,0.35 -1.09,0.64 2.03,1.93 -0.49,0.26 0.65,1.300005 -0.35,1.17 0.97,-0.71 0.57,2.67 0.79,0.2 -0.37,0.8 1.01,0.81 -0.17,1.32 0.98,-0.12 -0.12,0.61 1.07,0.6 0,0 -0.56,0.77 -4.92,0.34 0.09,-0.75 -0.91,-0.35 -0.48,1.36 -3,0.39 -0.95,1.29 -6.26,3.91 -15.92,7.41 -1.53,1.97 -1.67,-0.84 -1.92,2.58 -1.44,2.81 -0.1,1.08 0.83,0.39 -1.08,0.4 -1.56,6.49 1.36,0.42 -1.08,1.07 0.57,2.52 1.28,1.45 -0.29,5.3 1.44,1.22 1.58,3.1 -0.51,-0.34 -0.8,0.95 0.91,0.56 0.86,-0.63 -0.24,1.11 0.51,0.14 0.55,-0.31 -0.44,-1.76 0.49,0.03 4.3,5.37 -0.66,4.47 -1.07,0.98 0.04,2.85 -1.6,-0.55 0.34,-2.86 -1.02,-0.44 -0.92,0.38 -0.75,1.72 0.87,1.09 -0.38,2.07 0.78,0.66 0.65,-0.45 0.06,0.72 -1.32,-0.13 -0.11,1.44 -2.41,-1.92 0,0 -0.6,-2.18 -1.99,-0.51 -0.64,-0.95 -0.33,-2.89 0.63,-1.24 -0.83,-1.08 -1.08,0.01 -1.46,1.29 -2.15,-0.17 -0.81,-1.05 -1.48,0.97 -2.29,-3.08 -6.7,-1.07 -2.2,0.78 -6.27,-0.08 -2.92,1.36 -0.74,2.22 -3.19,0.9 -2.01,1.9 -1.24,0.12 -0.71,-0.24 -0.43,-1.62 -2.1,-1.41 -5.7,0.38 -0.16,-1.49 0,0 -0.23,-1.03 -7.98,-4.28 0,-2.46 -1.42,0.85 -3.13,-1.16 0.59,-1.62 -0.41,-1.01 1.27,-1.02 -3,-1.12 -0.93,1.68 -1.36,-0.73 -0.24,1.27 -1.2,-0.22 -2.32,-1.95 0.96,-1.88 -0.87,-0.55 -1.61,0.32 0.38,-1.71 -0.79,-1.22 -2.87,-1.3 0.1,-1.3 -1.82,-0.48 -0.11,-0.68 -2.64,-0.59 -1.12,-2.35 -1.96,-1.92 -2.41,2.01 -0.51,-0.99 -1.49,-0.38 0.68,-1.91 -0.99,-1.49 1.3,-0.97 -0.96,-0.75 0.96,-2.57 -2.46,-1.13 -0.7,0.81 -0.83,-0.18 0.41,-1.98 -1.13,-11.75 11.09,-16.500005 0,0 2.68,1.66 -1.28,1.1 0.77,1.52 -2.18,4.030005 2.18,0.01 2.05,1.02 -0.65,1.13 1.49,0.93 1.49,-1.69 0.49,1.05 1.85,-2.66 0.44,1.17 1.64,-0.88 1.93,1.84 1.6,0.21 2.5,-3.37 -0.13,-3.600005 1.55,0.15 -0.6,-2.37 2.35,-2.83 0.87,-4.9 2.42,0.18 -0.02,-1.36 0.07,0.78 2.48,1.34 -0.35,-0.98 0.68,-1.54 1.29,-0.16 -0.37,-2.84 3.62,0.23 2.74,-2.26 2.15,-0.29 1.89,0.6 0.54,2.81 4.21,0.3 0.91,-1.87 -1.14,-2.02 0.73,-0.8 -0.73,-0.68 2.06,-0.6 -0.93,-1.54 0.01,-2.02 2.74,-0.87 0.67,0.77 0.74,-0.77 2.24,0.24 4.18,-1.46 1.71,-3.95 1.1,0.44 0.6,-1.6 -2.42,-2.22 0.79,-1.97 -1.21,-0.58 -0.64,0.41 -0.44,-1.94 -2.16,0.5 -0.79,-0.7 0.68,-1.89 -0.58,-1.41 -2.92,-2.43 2.36,-1.44 0.81,0.74 0.27,-3.66 2.3,-2.71 -0.59,-1.39 -3.08,-0.42 0.12,-1.65 4.87,-2.46 1.57,0.33 1.17,-1.18 1.16,-0.07 0.58,0.77 2.47,-3.92 -0.17,-1.48 1.52,-2.69 -0.31,-2.33 3.94,3.08 0.83,-0.29 1.55,0.98 0.11,2.26 3.34,-2.65 1.21,0.76 2.98,-0.94 0.75,0.89 1.26,-0.06 0.51,-0.46 -0.38,-1.32 0.87,0.2 1.67,-1.88 2.47,-0.92 0,0 1.41,-0.09 z" title="Veneto" id="IT-34" />
 </svg>
-  </div>
-   <div id="tooltip" style="display: none; position: absolute; background-color: #333; color: white; padding: 5px 10px; border-radius: 4px; font-size: 14px; pointer-events: none; z-index: 9997;"></div>
+  <div id="regionBoxesContainer">
+    <div id="region_IT_65" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Abruzzo</h3>
+        <p>L'Abruzzo, cuore verde d'Europa, incanta con i suoi paesaggi che spaziano dalle maestose vette del Gran Sasso e della Majella alle coste dell'Adriatico. Nota per i suoi parchi nazionali e riserve, offre una natura incontaminata, borghi storici e una ricca tradizione culinaria.</p>
+    </div>
 
-<svg width="800" height="600" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
-    <path id="IT_65" title="Abruzzo" d="M..." fill="#ccc" stroke="#333" stroke-width="1"></path>
-    <path id="IT-77" title="Basilicata" d="M..." fill="#ccc" stroke="#333" stroke-width="1"></path>
-    </svg>
+    <div id="region_IT-77" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Basilicata</h3>
+        <p>La Basilicata, terra antica e suggestiva, è caratterizzata da paesaggi montuosi e costieri, con le imponenti Dolomiti Lucane e le spiagge del Mar Ionio. Famosa per i Sassi di Matera, patrimonio UNESCO di inestimabile valore, e per la sua autenticità rurale, offre un viaggio nel tempo e nella natura.</p>
+    </div>
+
+    <div id="region_IT-78" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Calabria</h3>
+        <p>La Calabria, punta dello stivale italiano, affascina con le sue coste bagnate dal Mar Ionio e Tirreno, e una storia millenaria che si riflette in siti archeologici e tradizioni. Offre montagne selvagge, spiagge incantevoli e una gastronomia mediterranea dai sapori intensi e piccanti.</p>
+    </div>
+
+    <div id="region_IT-72" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Campania</h3>
+        <p>La Campania è un vero concentrato di storia, arte e bellezza naturale. Con città come Napoli, l'imponente Vesuvio, gli scavi di Pompei ed Ercolano, e le splendide isole di Capri e Ischia, offre un mix vibrante di cultura millenaria, paesaggi mozzafiato e una cucina rinomata a livello mondiale.</p>
+    </div>
+
+    <div id="region_IT-45" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Emilia-Romagna</h3>
+        <p>L'Emilia-Romagna è la 'Food Valley' d'Italia, un paradiso per i buongustai celebre per prodotti come Parmigiano Reggiano, Prosciutto di Parma e Aceto Balsamico. Oltre alla sua rinomata gastronomia, vanta città d'arte come Bologna, Parma e Ferrara, e le vivaci spiagge della Riviera Romagnola.</p>
+    </div>
+
+    <div id="region_IT-36" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Friuli-Venezia Giulia</h3>
+        <p>Il Friuli-Venezia Giulia è una regione di confine, un crocevia di culture con paesaggi diversi che vanno dalle maestose Alpi alle coste del Mar Adriatico. Offre un patrimonio culturale ricco di influenze latine, slave e germaniche, borghi storici, vigneti di eccellenza e un'atmosfera unica.</p>
+    </div>
+
+    <div id="region_IT-62" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Lazio</h3>
+        <p>Il Lazio, con Roma come capitale eterna, è il cuore pulsante dell'antica civiltà romana e della Chiesa Cattolica. Offre un'incredibile varietà di siti archeologici, musei, laghi vulcanici, coste e una campagna ricca di storia, tradizioni e tesori nascosti.</p>
+    </div>
+
+    <div id="region_IT-42" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Liguria</h3>
+        <p>La Liguria è una stretta fascia costiera incastonata tra le Alpi e il Mar Ligure, famosa per le pittoresche Cinque Terre, l'elegante Portofino e la storica Genova. Caratterizzata da borghi colorati, scogliere a picco sul mare e una cucina semplice ma gustosa, è un gioiello mediterraneo.</p>
+    </div>
+
+    <div id="region_IT-25" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Lombardia</h3>
+        <p>La Lombardia, con Milano, è il centro economico, della moda e del design italiano, ma offre anche città d'arte ricche di storia, i suggestivi laghi prealpini (Como, Garda, Maggiore) e le imponenti Alpi. Un mix dinamico di innovazione, cultura e bellezze naturali.</p>
+    </div>
+
+    <div id="region_IT-57" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Marche</h3>
+        <p>Le Marche sono una regione che si estende dalle dolci colline dell'entroterra fino alla costa adriatica, con un paesaggio costellato di borghi medievali, città d'arte rinascimentali e spiagge tranquille. Offre un'esperienza autentica, lontana dal turismo di massa, tra arte, natura e tradizioni.</p>
+    </div>
+
+    <div id="region_IT-67" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Molise</h3>
+        <p>Il Molise è una delle regioni più piccole e meno conosciute d'Italia, un vero e proprio scrigno di bellezze naturali e autenticità. Offre paesaggi incontaminati, montagne, colline e un breve tratto di costa adriatica, custode di borghi medievali, tradizioni antiche e un ritmo di vita lento e genuino.</p>
+    </div>
+
+    <div id="region_IT-21" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Piemonte</h3>
+        <p>Il Piemonte è una regione di straordinaria varietà, con le maestose Alpi, le dolci colline delle Langhe e del Monferrato (patrimonio UNESCO) e ampie pianure. Famosa per i suoi vini pregiati (Barolo, Barbaresco), i tartufi e il cioccolato, ha in Torino, l'antica capitale sabauda, un fulcro di storia, cultura e innovazione.</p>
+    </div>
+
+    <div id="region_IT-75" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Puglia</h3>
+        <p>La Puglia è il 'tacco' d'Italia, incantevole con le sue lunghe coste bagnate dal Mar Adriatico e Ionio, i caratteristici trulli di Alberobello, le affascinanti città bianche e una cucina mediterranea che celebra i sapori autentici della terra e del mare. Famosa per il suo mare cristallino e l'ottimo olio d'oliva.</p>
+    </div>
+
+    <div id="region_IT-82" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Sardegna</h3>
+        <p>La Sardegna è un'isola dalla bellezza selvaggia e incontaminata, con coste mozzafiato, spiagge che ricordano i Caraibi, un entroterra montuoso e una cultura antica e misteriosa. Offre un mare cristallino, siti archeologici nuragici unici al mondo e una cucina autentica di mare e di terra.</p>
+    </div>
+
+    <div id="region_IT-80" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Sicilia</h3>
+        <p>La Sicilia è l'isola più grande del Mediterraneo, un crocevia di civiltà con una storia millenaria che ha lasciato un'eredità di templi greci, teatri romani e palazzi barocchi. Famosa per l'imponente vulcano Etna, il mare cristallino e la sua cucina ricca di sapori e influenze diverse.</p>
+    </div>
+
+    <div id="region_IT-52" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Toscana</h3>
+        <p>La Toscana è l'emblema del Rinascimento italiano, con città d'arte iconiche come Firenze, Siena e Pisa, che custodiscono capolavori inestimabili. Offre paesaggi collinari da cartolina, vigneti dove nasce il celebre Chianti e una cucina rinomata a livello mondiale. Un classico intramontabile dell'Italia.</p>
+    </div>
+
+    <div id="region_IT-32" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Trentino-Alto Adige</h3>
+        <p>Il Trentino-Alto Adige è una regione alpina bilingue (italiano e tedesco), incorniciata dalle maestose Dolomiti (patrimonio UNESCO), laghi alpini e città affascinanti come Trento e Bolzano. È il paradiso per gli sport invernali e per un turismo montano all'insegna della natura e della tranquillità.</p>
+    </div>
+
+    <div id="region_IT-55" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Umbria</h3>
+        <p>L'Umbria, il 'cuore verde d'Italia', è una regione collinare senza sbocco sul mare, ricca di spiritualità e di borghi medievali intatti come Assisi e Perugia. Offre laghi suggestivi (Trasimeno) e una ricca tradizione enogastronomica, rappresentando un'alternativa più tranquilla e autentica alla vicina Toscana.</p>
+    </div>
+
+    <div id="region_IT-34" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Veneto</h3>
+        <p>Il Veneto, con Venezia, è una regione ricca di storia, arte e paesaggi diversificati, dalle cime maestose delle Dolomiti alle coste adriatiche. Offre ville palladiane di rara bellezza, città d'arte uniche al mondo e una forte tradizione enogastronomica che spazia dai vini ai piatti tipici.</p>
+    </div>
+
+    <div id="region_IT-23" class="region-box">
+        <button class="close-button">&times;</button>
+        <h3>Valle d'Aosta</h3>
+        <p>La Valle d'Aosta è la più piccola regione d'Italia, interamente circondata dalle vette più alte delle Alpi (Monte Bianco, Cervino, Monte Rosa). È un paradiso per gli sport invernali e l'alpinismo, arricchito da castelli medievali, terme e una cultura alpina unica.</p>
+    </div>
+
+</div>
 
 
 <script>
-    // Questo wrapper assicura che il codice venga eseguito solo quando il DOM è completamente caricato
     document.addEventListener('DOMContentLoaded', function() {
         console.log("SVG iFrame Code: DOMContentLoaded executed."); 
 
@@ -119,110 +245,48 @@
         console.log("SVG iFrame Code: Found paths:", paths.length); 
 
         const tooltip = document.getElementById('tooltip');
-        console.log("SVG iFrame Code: Found tooltip element:", !!tooltip); 
-
-        // Nuovi riferimenti agli elementi del box di testo
-        const regionInfoBox = document.getElementById('regionInfoBox');
-        const regionTitle = document.getElementById('regionTitle');
-        const regionContent = document.getElementById('regionContent');
-        const closeButton = document.getElementById('closeButton');
-
-        // Aggiungi un controllo ESPLICITO per assicurarti che gli elementi siano stati trovati
-        if (!regionInfoBox || !regionTitle || !regionContent || !closeButton) {
-            console.error("SVG iFrame Code: CRITICAL ERROR - One or more UI elements (regionInfoBox, regionTitle, regionContent, closeButton) not found. Check IDs and HTML structure.");
-            // Impedisci ulteriori esecuzioni che fallirebbero
-            return; 
+        if (!tooltip) {
+            console.error("SVG iFrame Code: Tooltip element not found.");
+            // Non terminare l'esecuzione, il tooltip non è critico per la funzione principale
+        } else {
+            console.log("SVG iFrame Code: Found tooltip element:", !!tooltip); 
         }
 
-        console.log("SVG iFrame Code: All UI elements found for region display.");
+        // Riferimenti a tutti i box delle regioni e ai bottoni di chiusura
+        const regionBoxes = document.querySelectorAll('.region-box');
+        const closeButtons = document.querySelectorAll('.close-button');
 
-    const regionInfo = {
-        "IT_65": {
-            title: "Abruzzo",
-            content: "L'Abruzzo è una regione con paesaggi che spaziano dalle vette del Gran Sasso e della Majella alle coste dell'Adriatico. Nota per i suoi parchi nazionali, offre una natura incontaminata e borghi storici.",
-        },
-        "IT-77": {
-            title: "Basilicata",
-            content: "La Basilicata è una regione caratterizzata da paesaggi montuosi e costieri, con le Dolomiti Lucane e le spiagge del Mar Ionio. Famosa per i Sassi di Matera, patrimonio UNESCO, e per la sua autenticità rurale.",
-        },
-        "IT-78": {
-            title: "Calabria",
-            content: "La Calabria è la 'punta dello stivale', con coste affacciate sul Mar Ionio e sul Tirreno, e una ricca storia e cultura. Offre montagne, spiagge e una gastronomia piccante e saporita.",
-        },
-        "IT-72": {
-            title: "Campania",
-            content: "La Campania vanta città come Napoli, il Vesuvio, gli scavi di Pompei ed Ercolano, e le splendide isole di Capri e Ischia. È un mix vibrante di storia, arte, bellezza naturale e cucina rinomata.",
-        },
-        "IT-45": {
-            title: "Emilia-Romagna",
-            content: "L'Emilia-Romagna è la 'Food Valley' d'Italia, celebre per la sua gastronomia (Parmigiano Reggiano, Prosciutto di Parma, Aceto Balsamico) e città d'arte come Bologna, Parma e Ferrara. Offre anche le spiagge della Riviera Romagnola.",
-        },
-        "IT-36": {
-            title: "Friuli-Venezia Giulia",
-            content: "Il Friuli-Venezia Giulia è una regione di confine, con paesaggi diversi che vanno dalle Alpi alle coste, e una cultura ricca di influenze latine, slave e germaniche. Offre borghi storici, vigneti e mare.",
-        },
-        "IT-62": {
-            title: "Lazio",
-            content: "Il Lazio, con Roma come capitale, è il cuore dell'antica civiltà romana e della Chiesa Cattolica. Offre siti archeologici, musei, laghi, coste e una campagna ricca di storia e tradizioni.",
-        },
-        "IT-42": {
-            title: "Liguria",
-            content: "La Liguria è una stretta fascia costiera tra le Alpi e il Mar Ligure, famosa per le Cinque Terre, Portofino e Genova. Caratterizzata da borghi colorati, scogliere a picco sul mare e una cucina semplice ma gustosa.",
-        },
-        "IT-25": {
-            title: "Lombardia",
-            content: "La Lombardia, con Milano, è il centro economico e della moda italiana, con città d'arte, laghi prealpini (Como, Garda, Maggiore) e le Alpi. Offre un mix di innovazione e tradizione.",
-        },
-        "IT-57": {
-            title: "Marche",
-            content: "Le Marche sono una regione che si estende dalle montagne alla costa adriatica, con un paesaggio collinare costellato di borghi medievali, città d'arte e spiagge tranquille. Ideale per un turismo autentico.",
-        },
-        "IT-67": {
-            title: "Molise",
-            content: "Il Molise è una delle regioni più piccole e meno conosciute d'Italia, con paesaggi incontaminati, montagne, colline e un breve tratto di costa adriatica. Offre autenticità, borghi medievali e tradizioni antiche.",
-        },
-        "IT-21": {
-            title: "Piemonte",
-            content: "Il Piemonte è una regione di montagne (Alpi), colline (Langhe, Monferrato) e pianure, famosa per i suoi vini (Barolo, Barbaresco), tartufi e cioccolato. Torino, l'antica capitale, è ricca di storia e cultura.",
-        },
-        "IT-75": {
-            title: "Puglia",
-            content: "La Puglia è il 'tacco' d'Italia, con lunghe coste bagnate dal Mar Adriatico e Ionio, trulli di Alberobello, città bianche e una cucina mediterranea. Famosa per il suo mare cristallino e l'olio d'oliva.",
-        },
-        "IT-82": {
-            title: "Sardegna",
-            content: "La Sardegna è un'isola con coste mozzafiato, spiagge caraibiche, un entroterra montuoso e una cultura antica. Offre un mare cristallino, siti archeologici nuragici e una cucina di mare e di terra.",
-        },
-        "IT-80": {
-            title: "Sicilia",
-            content: "La Sicilia è l'isola più grande del Mediterraneo, con una storia millenaria che ha lasciato un'eredità di templi greci, teatri romani e palazzi barocchi. Famosa per l'Etna, il mare e la sua cucina.",
-        },
-        "IT-52": {
-            title: "Toscana",
-            content: "La Toscana è l'emblema del Rinascimento italiano, con Firenze, Siena e Pisa. Offre paesaggi collinari, vigneti (Chianti), città d'arte e una cucina rinomata. Un classico intramontabile.",
-        },
-        "IT-32": {
-            title: "Trentino-Alto Adige",
-            content: "Il Trentino-Alto Adige è una regione alpina bilingue (italiano e tedesco), con Dolomiti, laghi e città come Trento e Bolzano. Ideale per gli sport invernali e per un turismo montano.",
-        },
-        "IT-55": {
-            title: "Umbria",
-            content: "L'Umbria, il 'cuore verde d'Italia', è una regione collinare senza sbocco sul mare, con città medievali come Assisi e Perugia, laghi (Trasimeno) e una ricca tradizione enogastronomica. Un'alternativa più tranquilla alla Toscana.",
-        },
-        "IT-34": {
-            title: "Veneto",
-            content: "Il Veneto, con Venezia, è una regione ricca di storia, arte e paesaggi diversificati, dalle Dolomiti alle coste adriatiche. Offre ville palladiane, città d'arte e una forte tradizione enogastronomica.",
-        },
-        "IT-23": {
-            title: "Valle d'Aosta",
-            content: "La Valle d'Aosta è la più piccola regione d'Italia, circondata dalle vette più alte delle Alpi (Monte Bianco, Cervino). È un paradiso per gli sport invernali e l'alpinismo, con castelli medievali e terme.",
-        },
-    };
-    console.log("SVG iFrame Code: regionInfo loaded.", regionInfo); 
+        // Questo oggetto non è più usato per il contenuto dei box, ma solo per il tooltip.
+        // Se non usi il tooltip, puoi rimuoverlo o renderlo vuoto.
+        const regionNamesMap = {
+            "IT_65": "Abruzzo",
+            "IT-77": "Basilicata",
+            "IT-78": "Calabria",
+            "IT-72": "Campania",
+            "IT-45": "Emilia-Romagna",
+            "IT-36": "Friuli-Venezia Giulia",
+            "IT-62": "Lazio",
+            "IT-42": "Liguria",
+            "IT-25": "Lombardia",
+            "IT-57": "Marche",
+            "IT-67": "Molise",
+            "IT-21": "Piemonte",
+            "IT-75": "Puglia",
+            "IT-82": "Sardegna",
+            "IT-80": "Sicilia",
+            "IT-52": "Toscana",
+            "IT-32": "Trentino-Alto Adige",
+            "IT-55": "Umbria",
+            "IT-34": "Veneto",
+            "IT-23": "Valle d'Aosta",
+        };
+        console.log("SVG iFrame Code: Region names map loaded for tooltip (if used)."); 
 
         paths.forEach(path => {
+            // Evento mousemove per il tooltip
             path.addEventListener('mousemove', function(event) {
-                const title = path.getAttribute('title');
+                const regionId = path.getAttribute('id');
+                const title = regionNamesMap[regionId] || path.getAttribute('title'); // Usa la mappa o l'attributo title
                 if (title && tooltip) {
                     tooltip.innerHTML = title;
                     tooltip.style.display = 'block';
@@ -231,6 +295,7 @@
                 }
             });
 
+            // Evento mouseleave per nascondere il tooltip
             path.addEventListener('mouseleave', function() {
                 if (tooltip) {
                     tooltip.style.display = 'none';
@@ -238,28 +303,58 @@
                 }
             });
 
+            // Evento click per mostrare il box della regione
             path.addEventListener('click', function() {
-                const regionId = path.getAttribute('id');
-                const info = regionInfo[regionId];
+                const regionId = path.getAttribute('id'); // ID della regione cliccata (es. IT-72)
+                const targetBoxId = `region_${regionId}`; // ID del div del box corrispondente (es. region_IT-72)
+                const targetBox = document.getElementById(targetBoxId);
 
-                console.log("SVG iFrame Code: Region clicked. ID:", regionId, "Info:", info); 
+                console.log("SVG iFrame Code: Region clicked. ID:", regionId, "Target Box ID:", targetBoxId); 
 
-                if (info) { 
-                    regionTitle.textContent = info.title; // Aggiorna il titolo
-                    regionContent.textContent = info.content; // Aggiorna il contenuto
-                    regionInfoBox.style.display = 'block'; // Mostra il box
+                // Nascondi tutti i box delle regioni
+                regionBoxes.forEach(box => {
+                    if (box.classList.contains('active')) {
+                        // Per una transizione smooth, imposta opacità a 0 prima di display: none
+                        box.style.opacity = '0'; 
+                        // Aspetta la fine della transizione prima di nasconderlo completamente
+                        setTimeout(() => {
+                            box.classList.remove('active');
+                            box.style.display = 'none';
+                        }, 300); // Durata della transizione CSS (0.3s = 300ms)
+                    }
+                });
+
+                // Mostra solo il box corrispondente alla regione cliccata
+                if (targetBox) {
+                    targetBox.style.display = 'block'; // Mostra il box immediatamente
+                    setTimeout(() => { // Poi aggiungi la classe active per la transizione di opacità
+                        targetBox.classList.add('active'); 
+                    }, 10); // Piccolo ritardo per assicurare che il display sia impostato prima dell'opacità
+                    console.log("SVG iFrame Code: Displaying box for:", regionId);
                 } else {
-                    console.warn('SVG iFrame Code: Information not found for region ID:', regionId, '- Check regionInfo object.');
+                    console.warn('SVG iFrame Code: Box not found for region ID:', regionId, '. Make sure the ID in HTML matches region_ + SVG ID.');
                 }
             });
         });
 
-        // Aggiungi l'event listener per il bottone di chiusura
-        closeButton.addEventListener('click', function() {
-            regionInfoBox.style.display = 'none'; // Nascondi il box al click
+        // Gestione dei bottoni di chiusura
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Trova il parent element che è il .region-box e nascondilo
+                const parentBox = button.closest('.region-box');
+                if (parentBox) {
+                    parentBox.style.opacity = '0';
+                    setTimeout(() => {
+                        parentBox.classList.remove('active');
+                        parentBox.style.display = 'none';
+                    }, 300); // Deve corrispondere alla durata della transizione CSS
+                }
+            });
         });
 
         console.log("SVG iFrame Code: Event listeners attached."); 
     }); // Chiusura di DOMContentLoaded
 </script>
+
+</body>
 </html>
