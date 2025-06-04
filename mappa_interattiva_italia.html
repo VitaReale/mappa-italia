@@ -111,26 +111,30 @@
 
 
 <script>
-        console.log("SVG iFrame Code: Script loaded and executing directly."); 
+    // Questo wrapper assicura che il codice venga eseguito solo quando il DOM è completamente caricato
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("SVG iFrame Code: DOMContentLoaded executed."); 
 
-    const paths = document.querySelectorAll('svg path');
-    console.log("SVG iFrame Code: Found paths:", paths.length); 
+        const paths = document.querySelectorAll('svg path');
+        console.log("SVG iFrame Code: Found paths:", paths.length); 
 
-    const tooltip = document.getElementById('tooltip');
-    console.log("SVG iFrame Code: Found tooltip element:", !!tooltip); 
+        const tooltip = document.getElementById('tooltip');
+        console.log("SVG iFrame Code: Found tooltip element:", !!tooltip); 
 
-    // Nuovi riferimenti agli elementi del box di testo
-    const regionInfoBox = document.getElementById('regionInfoBox');
-    const regionTitle = document.getElementById('regionTitle');
-    const regionContent = document.getElementById('regionContent');
-    const closeButton = document.getElementById('closeButton');
+        // Nuovi riferimenti agli elementi del box di testo
+        const regionInfoBox = document.getElementById('regionInfoBox');
+        const regionTitle = document.getElementById('regionTitle');
+        const regionContent = document.getElementById('regionContent');
+        const closeButton = document.getElementById('closeButton');
 
-    // Aggiungi un controllo per assicurarti che gli elementi siano stati trovati
-    if (!regionInfoBox || !regionTitle || !regionContent || !closeButton) {
-        console.error("SVG iFrame Code: One or more UI elements not found. Check IDs and script placement.");
-        // Non proseguire se gli elementi non sono stati trovati
-        return; 
-    }
+        // Aggiungi un controllo ESPLICITO per assicurarti che gli elementi siano stati trovati
+        if (!regionInfoBox || !regionTitle || !regionContent || !closeButton) {
+            console.error("SVG iFrame Code: CRITICAL ERROR - One or more UI elements (regionInfoBox, regionTitle, regionContent, closeButton) not found. Check IDs and HTML structure.");
+            // Impedisci ulteriori esecuzioni che fallirebbero
+            return; 
+        }
+
+        console.log("SVG iFrame Code: All UI elements found for region display.");
 
     const regionInfo = {
         "IT_65": {
@@ -216,47 +220,46 @@
     };
     console.log("SVG iFrame Code: regionInfo loaded.", regionInfo); 
 
-    paths.forEach(path => {
-        path.addEventListener('mousemove', function(event) {
-            const title = path.getAttribute('title');
-            if (title && tooltip) {
-                tooltip.innerHTML = title;
-                tooltip.style.display = 'block';
-                tooltip.style.left = (event.pageX + 10) + 'px';
-                tooltip.style.top = (event.pageY + 10) + 'px';
-            }
+        paths.forEach(path => {
+            path.addEventListener('mousemove', function(event) {
+                const title = path.getAttribute('title');
+                if (title && tooltip) {
+                    tooltip.innerHTML = title;
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = (event.pageX + 10) + 'px';
+                    tooltip.style.top = (event.pageY + 10) + 'px';
+                }
+            });
+
+            path.addEventListener('mouseleave', function() {
+                if (tooltip) {
+                    tooltip.style.display = 'none';
+                    tooltip.innerHTML = '';
+                }
+            });
+
+            path.addEventListener('click', function() {
+                const regionId = path.getAttribute('id');
+                const info = regionInfo[regionId];
+
+                console.log("SVG iFrame Code: Region clicked. ID:", regionId, "Info:", info); 
+
+                if (info) { 
+                    regionTitle.textContent = info.title; // Aggiorna il titolo
+                    regionContent.textContent = info.content; // Aggiorna il contenuto
+                    regionInfoBox.style.display = 'block'; // Mostra il box
+                } else {
+                    console.warn('SVG iFrame Code: Information not found for region ID:', regionId, '- Check regionInfo object.');
+                }
+            });
         });
 
-        path.addEventListener('mouseleave', function() {
-            if (tooltip) {
-                tooltip.style.display = 'none';
-                tooltip.innerHTML = '';
-            }
-        });
-
-        path.addEventListener('click', function() {
-            const regionId = path.getAttribute('id');
-            const info = regionInfo[regionId];
-
-            console.log("SVG iFrame Code: Region clicked. ID:", regionId, "Info:", info); 
-
-            if (info) { 
-                regionTitle.textContent = info.title; // Aggiorna il titolo
-                regionContent.textContent = info.content; // Aggiorna il contenuto
-                regionInfoBox.style.display = 'block'; // Mostra il box
-            } else {
-                console.warn('SVG iFrame Code: Information not found for region ID:', regionId, '- Check regionInfo object.');
-            }
-        });
-    });
-
-    // Aggiungi l'event listener per il bottone di chiusura
-    if (closeButton) { // Controllo aggiuntivo, anche se ora dovrebbe essere sempre trovato
+        // Aggiungi l'event listener per il bottone di chiusura
         closeButton.addEventListener('click', function() {
             regionInfoBox.style.display = 'none'; // Nascondi il box al click
         });
-    }
 
-    console.log("SVG iFrame Code: Event listeners attached."); 
+        console.log("SVG iFrame Code: Event listeners attached."); 
+    }); // Chiusura di DOMContentLoaded
 </script>
 </html>
