@@ -111,7 +111,7 @@
 
 
 <script>
-    console.log("SVG iFrame Code: Script loaded and executing directly."); 
+        console.log("SVG iFrame Code: Script loaded and executing directly."); 
 
     const paths = document.querySelectorAll('svg path');
     console.log("SVG iFrame Code: Found paths:", paths.length); 
@@ -124,6 +124,13 @@
     const regionTitle = document.getElementById('regionTitle');
     const regionContent = document.getElementById('regionContent');
     const closeButton = document.getElementById('closeButton');
+
+    // Aggiungi un controllo per assicurarti che gli elementi siano stati trovati
+    if (!regionInfoBox || !regionTitle || !regionContent || !closeButton) {
+        console.error("SVG iFrame Code: One or more UI elements not found. Check IDs and script placement.");
+        // Non proseguire se gli elementi non sono stati trovati
+        return; 
+    }
 
     const regionInfo = {
         "IT_65": {
@@ -232,7 +239,8 @@
             const info = regionInfo[regionId];
 
             console.log("SVG iFrame Code: Region clicked. ID:", regionId, "Info:", info); 
-if (info) { 
+
+            if (info) { 
                 regionTitle.textContent = info.title; // Aggiorna il titolo
                 regionContent.textContent = info.content; // Aggiorna il contenuto
                 regionInfoBox.style.display = 'block'; // Mostra il box
@@ -243,12 +251,12 @@ if (info) {
     });
 
     // Aggiungi l'event listener per il bottone di chiusura
-    if (closeButton) {
+    if (closeButton) { // Controllo aggiuntivo, anche se ora dovrebbe essere sempre trovato
         closeButton.addEventListener('click', function() {
             regionInfoBox.style.display = 'none'; // Nascondi il box al click
         });
     }
 
-    console.log("SVG iFrame Code: Event listeners attached.");  
+    console.log("SVG iFrame Code: Event listeners attached."); 
 </script>
 </html>
