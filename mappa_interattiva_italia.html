@@ -28,6 +28,51 @@
     pointer-events: none; 
     z-index: 1000;
   }
+ /* NUOVI STILI PER IL BOX DI TESTO DINAMICO */
+        #regionInfoBox {
+            display: none; /* Inizialmente nascosto */
+            position: absolute; /* O 'fixed' se vuoi che segua lo scroll */
+            top: 50px; /* Regola la posizione verticale */
+            left: 50%; /* Centra orizzontalmente */
+            transform: translateX(-50%); /* Centra orizzontalmente con precisione */
+            width: 400px; /* Larghezza del box */
+            max-width: 90%; /* Per reattività su schermi più piccoli */
+            padding: 20px;
+            background-color: #f0f0f0; /* Sfondo del box */
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 9998; /* Assicurati che sia sopra la mappa e il tooltip */
+            font-family: Arial, sans-serif; /* Font leggibile */
+            color: #333; /* Colore del testo */
+        }
+
+        #regionInfoBox h3 {
+            margin-top: 0;
+            color: #0056b3; /* Colore titolo */
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        #regionInfoBox p {
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        #closeButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #888;
+        }
+        #closeButton:hover {
+            color: #333;
+        }
+  
 </style>
 
 </head>
