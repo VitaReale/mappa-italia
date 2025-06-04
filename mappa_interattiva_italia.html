@@ -119,6 +119,12 @@
     const tooltip = document.getElementById('tooltip');
     console.log("SVG iFrame Code: Found tooltip element:", !!tooltip); 
 
+    // Nuovi riferimenti agli elementi del box di testo
+    const regionInfoBox = document.getElementById('regionInfoBox');
+    const regionTitle = document.getElementById('regionTitle');
+    const regionContent = document.getElementById('regionContent');
+    const closeButton = document.getElementById('closeButton');
+
     const regionInfo = {
         "IT_65": {
             title: "Abruzzo",
@@ -226,28 +232,23 @@
             const info = regionInfo[regionId];
 
             console.log("SVG iFrame Code: Region clicked. ID:", regionId, "Info:", info); 
-
-            if (info && info.title && info.content) { 
-                console.log("SVG iFrame Code: Sending message to parent. Payload:", {
-                    type: 'displayRegionInfo', // <--- NUOVO TIPO DI MESSAGGIO
-                    payload: {
-                        title: info.title,
-                        content: info.content 
-                    }
-                });
-
-                window.parent.postMessage({
-                    type: 'displayRegionInfo',
-                    payload: {
-                        title: info.title,
-                        content: info.content
-                    }
-                }, '*');
-            } else if (regionId) {
-                console.warn('SVG iFrame Code: Information (title or content) not found for region ID:', regionId, '- Check regionInfo object.');
+if (info) { 
+                regionTitle.textContent = info.title; // Aggiorna il titolo
+                regionContent.textContent = info.content; // Aggiorna il contenuto
+                regionInfoBox.style.display = 'block'; // Mostra il box
+            } else {
+                console.warn('SVG iFrame Code: Information not found for region ID:', regionId, '- Check regionInfo object.');
             }
         });
     });
-    console.log("SVG iFrame Code: Event listeners attached."); 
+
+    // Aggiungi l'event listener per il bottone di chiusura
+    if (closeButton) {
+        closeButton.addEventListener('click', function() {
+            regionInfoBox.style.display = 'none'; // Nascondi il box al click
+        });
+    }
+
+    console.log("SVG iFrame Code: Event listeners attached.");  
 </script>
 </html>
