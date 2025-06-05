@@ -293,11 +293,13 @@ document.addEventListener('DOMContentLoaded', function() {
             regionBoxes.forEach(box => {
                 if (box !== targetBox) {
                     box.classList.remove('active');
+                    box.style.display = ''; // Reset display in caso fosse stato impostato a 'none'
                 }
             });
 
             if (targetBox) {
-                // Se il box è già visibile, lo riapriamo comunque (utile per fixare stati inconsistenti)
+                targetBox.style.display = 'block'; // Assicura che sia visibile
+                void targetBox.offsetWidth; // Forza il reflow per attivare la transizione
                 targetBox.classList.add('active');
             }
         });
@@ -308,12 +310,14 @@ document.addEventListener('DOMContentLoaded', function() {
             const parentBox = button.closest('.region-box');
             if (parentBox) {
                 parentBox.classList.remove('active');
+                setTimeout(() => {
+                    parentBox.style.display = 'none';
+                }, 300); // corrisponde alla durata della transizione CSS
             }
         });
     });
 });
 </script>
-
 
 </body>
 </html>
