@@ -284,6 +284,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
    let selectedPath = null; // Dichiara questa variabile una sola volta qui
 
+      // Funzione per resettare il colore di tutte le regioni
+    function resetAllRegionColors() {
+        paths.forEach(path => {
+            path.classList.remove('selected'); // Rimuove la classe selected da tutti i path
+        });
+        selectedPath = null; // Resetta anche la variabile selectedPath
+    }
+
     // UNICO CICLO per tutti i listener degli eventi sui path
     paths.forEach(path => {
         const regionId = path.getAttribute('id');
@@ -343,6 +351,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 parentBox.classList.remove('active');
                 setTimeout(() => {
                     parentBox.style.display = 'none';
+
+// Dopo che il box è stato nascosto, controlla se ci sono altri box attivi
+                    const activeBoxes = document.querySelectorAll('.region-box.active');
+                    const visibleBoxes = Array.from(regionBoxes).filter(box => box.style.display !== 'none');
+
+                    // Se non ci sono box visibili (o attivi, se preferisci basarti su .active)
+                    if (visibleBoxes.length === 0) { // O activeBoxes.length === 0, a seconda della tua logica di "nascosto"
+                        resetAllRegionColors(); // Resetta i colori di tutte le regioni
+                    }
+                  
                 }, 300);
             }
         });
