@@ -282,10 +282,14 @@ document.addEventListener('DOMContentLoaded', function() {
         "IT-23": "Valle d'Aosta",
     };
 
+   let selectedPath = null; // Dichiara questa variabile una sola volta qui
+
+    // UNICO CICLO per tutti i listener degli eventi sui path
     paths.forEach(path => {
         const regionId = path.getAttribute('id');
         const targetBoxId = `region_${regionId}`;
 
+        // Listener per mousemove
         path.addEventListener('mousemove', event => {
             const title = regionNamesMap[regionId] || path.getAttribute('title');
             if (tooltip && title) {
@@ -296,6 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        // Listener per mouseleave
         path.addEventListener('mouseleave', () => {
             if (tooltip) {
                 tooltip.style.display = 'none';
@@ -303,40 +308,34 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-      let selectedPath = null;
-
-      paths.forEach(path => {
-  const regionId = path.getAttribute('id');
-  const targetBoxId = `region_${regionId}`;
-      
+        // Listener per click
         path.addEventListener('click', () => {
             const targetBox = document.getElementById(targetBoxId);
 
-              // Rimuovi la classe 'selected' da tutte le regioni
-    if (selectedPath) {
-      selectedPath.classList.remove('selected');
-    }
+            // Rimuovi la classe 'selected' da tutte le regioni
+            if (selectedPath) {
+                selectedPath.classList.remove('selected');
+            }
 
             regionBoxes.forEach(box => {
                 if (box !== targetBox) {
                     box.classList.remove('active');
-                    box.style.display = ''; // Reset display in caso fosse stato impostato a 'none'
+                    box.style.display = '';
                 }
             });
 
             if (targetBox) {
-                targetBox.style.display = 'block'; // Assicura che sia visibile
-                void targetBox.offsetWidth; // Forza il reflow per attivare la transizione
+                targetBox.style.display = 'block';
+                void targetBox.offsetWidth;
                 targetBox.classList.add('active');
 
-               // Aggiungi la classe .selected alla regione cliccata
-      path.classList.add('selected');
-      selectedPath = path;
-              }
+                path.classList.add('selected');
+                selectedPath = path;
             }
         });
-    });
+    }); // Fine del ciclo paths.forEach (unico)
 
+    // Logica per i pulsanti di chiusura (separata perché non specifica dei path)
     closeButtons.forEach(button => {
         button.addEventListener('click', () => {
             const parentBox = button.closest('.region-box');
@@ -344,12 +343,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 parentBox.classList.remove('active');
                 setTimeout(() => {
                     parentBox.style.display = 'none';
-                }, 300); // corrisponde alla durata della transizione CSS
+                }, 300);
             }
         });
     });
 });
-  });
 </script>
 
 </body>
