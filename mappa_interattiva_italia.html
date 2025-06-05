@@ -5,86 +5,98 @@
   <title>Mappa Interattiva Italia</title>
   
 <style>
-  /* Colore di base per tutte le regioni */
-  path {
-    fill: #647F76;
-  }
+  /* Colore base delle regioni */
+path {
+  fill: #7A9E92;
+  transition: fill 0.3s ease;
+}
 
-  /* Colore al passaggio del mouse */
-  path:hover {
-    fill: #CAA15A !important; /* !important assicura che questo stile sovrascriva altri se necessario */
-    cursor: pointer;
-  }
+path:hover {
+  fill: #D4A373 !important;
+  cursor: pointer;
+}
 
-  /* Stile per il tooltip personalizzato (invariato) */
-  #tooltip {
-    position: absolute;
-    display: none;
-    background-color: #333;
-    color: #fff;
-    padding: 5px 10px;
-    border-radius: 4px;
-    font-size: 14px;
-    pointer-events: none; 
-    z-index: 1000;
-  }
+/* Tooltip elegante */
+#tooltip {
+  position: absolute;
+  display: none;
+  background-color: rgba(51, 51, 51, 0.9);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: 'Helvetica Neue', sans-serif;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+}
 
-  /* Stili per il contenitore generale dei box regione */
-  #regionBoxesContainer {
-      position: absolute; /* O 'fixed' per seguir scroll */
-      top: 50px; /* Posizione rispetto al top dell'iframe */
-      left: 50%;
-      transform: translateX(-50%);
-      width: 400px;
-      max-width: 90%;
-      z-index: 9998; /* Assicurati che sia sopra la mappa e il tooltip */
-      font-family: Arial, sans-serif;
-      color: #333;
-  }
+/* Contenitore box */
+#regionBoxesContainer {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  max-width: 90%;
+  z-index: 9998;
+  font-family: 'Helvetica Neue', sans-serif;
+  color: #2e2e2e;
+}
 
-  /* Stili per ogni singolo box regione */
-  .region-box {
-      display: none; /* Inizialmente tutti nascosti */
-      padding: 20px;
-      background-color: #f0f0f0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      transition: opacity 0.3s ease-in-out; /* Per un effetto di dissolvenza */
-      opacity: 0; /* Per la transizione iniziale */
-      position: relative; /* Necessario per posizionare il bottone di chiusura */
-  }
-  /* Quando un box è attivo, mostralo */
-  .region-box.active {
-      display: block;
-      opacity: 1;
-  }
+/* Box regione */
+.region-box {
+  display: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  padding: 24px;
+  background-color: #fffdf9;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
 
-  .region-box h3 {
-      margin-top: 0;
-      color: #0056b3;
-      font-size: 20px;
-      margin-bottom: 10px;
-  }
+/* Box attivo */
+.region-box.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
 
-  .region-box p {
-      line-height: 1.6;
-      font-size: 16px;
-  }
+/* Titolo */
+.region-box h3 {
+  margin-top: 0;
+  font-size: 22px;
+  color: #a65f46;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
 
-  .close-button { /* Stile per i bottoni di chiusura in ogni box */
-      position: absolute; /* Relativo al .region-box */
-      top: 10px;
-      right: 10px;
-      background: none;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      color: #888;
-  }
-  .close-button:hover {
-      color: #333;
-  }
+/* Testo */
+.region-box p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* Pulsante chiusura */
+.close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: #555;
+}
 </style>
 </head>
 <body>
