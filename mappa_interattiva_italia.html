@@ -236,123 +236,133 @@
 
 </div>
 
-
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log("SVG iFrame Code: DOMContentLoaded executed."); 
-
-        const paths = document.querySelectorAll('svg path');
-        console.log("SVG iFrame Code: Found paths:", paths.length); 
-
-        const tooltip = document.getElementById('tooltip');
-        if (!tooltip) {
-            console.error("SVG iFrame Code: Tooltip element not found.");
-            // Non terminare l'esecuzione, il tooltip non è critico per la funzione principale
-        } else {
-            console.log("SVG iFrame Code: Found tooltip element:", !!tooltip); 
+    document.addEventListener('DOMContentLoaded', function () {
+        const svgObject = document.getElementById('italia_svg');
+        if (!svgObject) {
+            console.error("SVG object with ID 'italia_svg' not found.");
+            return;
         }
 
-        // Riferimenti a tutti i box delle regioni e ai bottoni di chiusura
-        const regionBoxes = document.querySelectorAll('.region-box');
-        const closeButtons = document.querySelectorAll('.close-button');
+        svgObject.addEventListener('load', function() {
+            console.log("SVG iFrame Code: SVG loaded.");
+            const svgDoc = svgObject.contentDocument;
+            if (!svgDoc) {
+                console.error("SVG iFrame Code: SVG contentDocument not accessible. Check for cross-origin issues if serving from a different domain.");
+                return;
+            }
 
-        // Questo oggetto non è più usato per il contenuto dei box, ma solo per il tooltip.
-        // Se non usi il tooltip, puoi rimuoverlo o renderlo vuoto.
-        const regionNamesMap = {
-            "IT_65": "Abruzzo",
-            "IT-77": "Basilicata",
-            "IT-78": "Calabria",
-            "IT-72": "Campania",
-            "IT-45": "Emilia-Romagna",
-            "IT-36": "Friuli-Venezia Giulia",
-            "IT-62": "Lazio",
-            "IT-42": "Liguria",
-            "IT-25": "Lombardia",
-            "IT-57": "Marche",
-            "IT-67": "Molise",
-            "IT-21": "Piemonte",
-            "IT-75": "Puglia",
-            "IT-88": "Sardegna",
-            "IT-82": "Sicilia",
-            "IT-52": "Toscana",
-            "IT-32": "Trentino-Alto Adige",
-            "IT-55": "Umbria",
-            "IT-34": "Veneto",
-            "IT-23": "Valle d'Aosta",
-        };
-        console.log("SVG iFrame Code: Region names map loaded for tooltip (if used)."); 
+            const svgRegions = svgDoc.querySelectorAll('path[id]'); // Seleziona solo i path con un ID
+            const tooltip = document.getElementById('tooltip');
+            const regionBoxesContainer = document.getElementById('regionBoxesContainer');
+            const regionBoxes = document.querySelectorAll('.region-box');
+            const closeButtons = document.querySelectorAll('.region-box .close-button');
 
-        paths.forEach(path => {
-            // Evento mousemove per il tooltip
-            path.addEventListener('mousemove', function(event) {
-                const regionId = path.getAttribute('id');
-                const title = regionNamesMap[regionId] || path.getAttribute('title'); // Usa la mappa o l'attributo title
-                if (title && tooltip) {
-                    tooltip.innerHTML = title;
-                    tooltip.style.display = 'block';
-                    tooltip.style.left = (event.pageX + 10) + 'px';
-                    tooltip.style.top = (event.pageY + 10) + 'px';
-                }
+            if (!tooltip) {
+                console.warn("SVG iFrame Code: Tooltip element not found.");
+            }
+            if (!regionBoxesContainer) {
+                console.warn("SVG iFrame Code: regionBoxesContainer not found.");
+            }
+            if (regionBoxes.length === 0) {
+                console.warn("SVG iFrame Code: No .region-box elements found.");
+            }
+            if (closeButtons.length === 0) {
+                console.warn("SVG iFrame Code: No .close-button elements found.");
+            }
+            console.log("SVG iFrame Code: Initial elements selected:", {
+                svgRegionsCount: svgRegions.length,
+                tooltipExists: !!tooltip,
+                regionBoxesContainerExists: !!regionBoxesContainer,
+                regionBoxesCount: regionBoxes.length,
+                closeButtonsCount: closeButtons.length
             });
 
-            // Evento mouseleave per nascondere il tooltip
-            path.addEventListener('mouseleave', function() {
-                if (tooltip) {
-                    tooltip.style.display = 'none';
-                    tooltip.innerHTML = '';
-                }
-            });
+            // Interazione tooltip e hover regioni SVG
+            svgRegions.forEach(region => {
+                const regionName = region.getAttribute('data-name') || region.getAttribute('id'); // Usa data-name o ID
 
-            // Evento click per mostrare il box della regione
-            path.addEventListener('click', function() {
-                const regionId = path.getAttribute('id'); // ID della regione cliccata (es. IT-72)
-                const targetBoxId = `region_${regionId}`; // ID del div del box corrispondente (es. region_IT-72)
-                const targetBox = document.getElementById(targetBoxId);
-
-                console.log("SVG iFrame Code: Region clicked. ID:", regionId, "Target Box ID:", targetBoxId); 
-
-                // Nascondi tutti i box delle regioni
-                regionBoxes.forEach(box => {
-                    if (box.classList.contains('active')) {
-                        // Per una transizione smooth, imposta opacità a 0 prima di display: none
-                        box.style.opacity = '0'; 
-                        // Aspetta la fine della transizione prima di nasconderlo completamente
-                        setTimeout(() => {
-                            box.classList.remove('active');
-                            box.style.display = 'none';
-                        }, 300); // Durata della transizione CSS (0.3s = 300ms)
+                region.addEventListener('mousemove', function(e) {
+                    if (tooltip) {
+                        tooltip.innerHTML = regionName;
+                        tooltip.style.display = 'block';
+                        // Posizionamento del tooltip rispetto al cursore
+                        // Assicurati che l'iframe o il contenitore dell'SVG sia posizionato relativamente
+                        // o calcola le coordinate tenendo conto dell'offset dell'iframe/SVG.
+                        // Queste coordinate sono relative alla viewport DELL'IFRAME.
+                        tooltip.style.left = (e.pageX + 10) + 'px';
+                        tooltip.style.top = (e.pageY + 10) + 'px';
                     }
                 });
 
-                // Mostra solo il box corrispondente alla regione cliccata
-                if (targetBox) {
-                    targetBox.style.display = 'block'; // Mostra il box immediatamente
-                    setTimeout(() => { // Poi aggiungi la classe active per la transizione di opacità
-                        targetBox.classList.add('active'); 
-                    }, 10); // Piccolo ritardo per assicurare che il display sia impostato prima dell'opacità
-                    console.log("SVG iFrame Code: Displaying box for:", regionId);
-                } else {
-                    console.warn('SVG iFrame Code: Box not found for region ID:', regionId, '. Make sure the ID in HTML matches region_ + SVG ID.');
-                }
+                region.addEventListener('mouseout', function() {
+                    if (tooltip) {
+                        tooltip.style.display = 'none';
+                    }
+                });
             });
-        });
 
-        // Gestione dei bottoni di chiusura
-        closeButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // Trova il parent element che è il .region-box e nascondilo
-                const parentBox = button.closest('.region-box');
-                if (parentBox) {
-                    parentBox.style.opacity = '0';
-                    setTimeout(() => {
+            // Interazione con le regioni dell'SVG per mostrare i box
+            svgRegions.forEach(region => {
+                region.addEventListener('click', function() {
+                    const regionId = this.getAttribute('id');
+                    const targetBoxId = 'region_' + regionId;
+                    const targetBox = document.getElementById(targetBoxId);
+
+                    console.log("SVG iFrame Code: Region clicked:", regionId);
+
+                    // Nascondi tutti i box attivi prima di mostrarne uno nuovo
+                    document.querySelectorAll('.region-box.active').forEach(box => {
+                        if (box.id !== targetBoxId) {
+                            box.classList.remove('active');
+                            setTimeout(() => {
+                                box.style.display = 'none';
+                            }, 300); // Deve corrispondere alla durata della transizione CSS
+                        }
+                    });
+
+                    // Mostra il box corrispondente alla regione cliccata
+                    if (targetBox) {
+                        targetBox.style.display = 'block'; // Mostra il box immediatamente
+                        setTimeout(() => { // Poi aggiungi la classe active per la transizione di opacità
+                            targetBox.classList.add('active');
+                        }, 10); // Piccolo ritardo per assicurare che il display sia impostato prima dell'opacità
+                        console.log("SVG iFrame Code: Displaying box for:", regionId);
+                    } else {
+                        console.warn('SVG iFrame Code: Box not found for region ID:', regionId, '. Make sure the ID in HTML matches region_ + SVG ID.');
+                    }
+                });
+            });
+
+            // Gestione dei bottoni di chiusura
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Trova il parent element che è il .region-box e nascondilo
+                    const parentBox = button.closest('.region-box');
+                    if (parentBox) {
+                        // Rimuovi la classe 'active' per avviare la transizione di opacità (da 1 a 0)
                         parentBox.classList.remove('active');
-                        parentBox.style.display = 'none';
-                    }, 300); // Deve corrispondere alla durata della transizione CSS
-                }
+                        
+                        // Attendi la fine della transizione (definita in CSS, es. 0.3s) prima di impostare display: none
+                        setTimeout(() => {
+                            parentBox.style.display = 'none';
+                        }, 300); // Questa durata DEVE corrispondere alla durata della transizione CSS per l'opacità
+                    }
+                });
             });
-        });
 
-        console.log("SVG iFrame Code: Event listeners attached."); 
+            console.log("SVG iFrame Code: Event listeners attached.");
+        }); // Chiusura di svgObject.addEventListener('load', ...)
+
+        // Fallback nel caso l'evento 'load' non scatti per qualche motivo (es. SVG già caricato)
+        // o se l'SVG è inline e non un <object>
+        if (svgObject && svgObject.contentDocument && svgObject.contentDocument.readyState === 'complete') {
+             console.log("SVG iFrame Code: SVG already loaded, attempting to run main logic.");
+             // Simula l'evento load o richiama la funzione di setup direttamente se necessario
+             // Questo potrebbe richiedere di ristrutturare il codice per evitare duplicazioni
+             // Per ora, ci affidiamo all'evento 'load'.
+        }
+
     }); // Chiusura di DOMContentLoaded
 </script>
 
