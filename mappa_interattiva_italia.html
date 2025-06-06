@@ -282,22 +282,19 @@ document.addEventListener('DOMContentLoaded', function() {
         "IT-23": "Valle d'Aosta",
     };
 
-   let selectedPath = null; // Dichiara questa variabile una sola volta qui
+    let selectedPath = null;
 
-      // Funzione per resettare il colore di tutte le regioni
     function resetAllRegionColors() {
         paths.forEach(path => {
-            path.classList.remove('selected'); // Rimuove la classe selected da tutti i path
+            path.classList.remove('selected');
         });
-        selectedPath = null; // Resetta anche la variabile selectedPath
+        selectedPath = null;
     }
 
-    // UNICO CICLO per tutti i listener degli eventi sui path
     paths.forEach(path => {
         const regionId = path.getAttribute('id');
         const targetBoxId = `region_${regionId}`;
 
-        // Listener per mousemove
         path.addEventListener('mousemove', event => {
             const title = regionNamesMap[regionId] || path.getAttribute('title');
             if (tooltip && title) {
@@ -308,7 +305,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Listener per mouseleave
         path.addEventListener('mouseleave', () => {
             if (tooltip) {
                 tooltip.style.display = 'none';
@@ -316,15 +312,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Listener per click
         path.addEventListener('click', () => {
             const targetBox = document.getElementById(targetBoxId);
 
-            // Rimuovi la classe 'selected' da tutte le regioni
+            // Rimuove selezione precedente
             if (selectedPath) {
                 selectedPath.classList.remove('selected');
             }
 
+            // Chiude tutti i box tranne quello selezionato
             regionBoxes.forEach(box => {
                 if (box !== targetBox) {
                     box.classList.remove('active');
@@ -341,27 +337,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 selectedPath = path;
             }
         });
-    }); // Fine del ciclo paths.forEach (unico)
+    });
 
-    // Logica per i pulsanti di chiusura (separata perché non specifica dei path)
     closeButtons.forEach(button => {
         button.addEventListener('click', () => {
             const parentBox = button.closest('.region-box');
+
             if (parentBox) {
                 parentBox.classList.remove('active');
+
                 setTimeout(() => {
                     parentBox.style.display = 'none';
 
-// Dopo che il box è stato nascosto, controlla se ci sono altri box attivi
-                    const activeBoxes = document.querySelectorAll('.region-box.active');
-                    const visibleBoxes = Array.from(regionBoxes).filter(box => box.style.display !== 'none');
-
-                    // Se non ci sono box visibili (o attivi, se preferisci basarti su .active)
-                    if (visibleBoxes.length === 0) { // O activeBoxes.length === 0, a seconda della tua logica di "nascosto"
-                        resetAllRegionColors(); // Resetta i colori di tutte le regioni
+                    // Verifica se il box chiuso corrisponde alla regione selezionata
+                    if (selectedPath) {
+                        const expectedBoxId = `region_${selectedPath.getAttribute('id')}`;
+                        if (parentBox.id === expectedBoxId) {
+                            selectedPath.classList.remove('selected');
+                            selectedPath = null;
+                        }
                     }
-                  
-                }, 300);
+
+                }, 300); // durata della transizione
             }
         });
     });
