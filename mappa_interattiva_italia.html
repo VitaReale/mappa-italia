@@ -16,23 +16,35 @@ path:hover {
   cursor: pointer;
 }
 
-  path.selected {
+path.selected {
   fill: #CAA15A !important;
+  filter: drop-shadow(0 0 6px rgba(202,161,90,0.6));
+  transition: filter 0.3s ease;
 }
 
 /* Tooltip */
 #tooltip {
   position: absolute;
   display: none;
-  background-color: rgba(51, 51, 51, 0.9);
+  background: rgba(51, 51, 51, 0.9);
   color: #fff;
-  padding: 6px 12px;
+  padding: 6px 10px;
   border-radius: 6px;
   font-size: 13px;
-  font-family: 'Helvetica Neue', sans-serif;
   pointer-events: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   z-index: 1000;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+}
+
+#tooltip::after {
+  content: "";
+  position: absolute;
+  bottom: 100%; /* freccia in alto */
+  left: 10px;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent rgba(51, 51, 51, 0.9) transparent;
 }
 
 /* Contenitore dei box */
@@ -53,13 +65,34 @@ path:hover {
   display: none;
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+ transition: opacity 0.4s ease, transform 0.4s ease;
   padding: 24px;
   background-color: #CAA15A;
   border: 1px solid #ccc;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   position: relative;
+}
+
+  .region-box {
+  animation: fadeSlideIn 0.4s ease;
+}
+
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+  .region-box:hover {
+  box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* Box attivo */
@@ -131,121 +164,221 @@ path:hover {
 </svg>
   <div id="regionBoxesContainer">
     <div id="region_IT_65" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Abruzzo</h3>
         <p>L'Abruzzo, cuore verde d'Europa, incanta con i suoi paesaggi che spaziano dalle maestose vette del Gran Sasso e della Majella alle coste dell'Adriatico. Nota per i suoi parchi nazionali e riserve, offre una natura incontaminata, borghi storici e una ricca tradizione culinaria.</p>
     </div>
 
     <div id="region_IT-77" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Basilicata</h3>
         <p>La Basilicata, terra antica e suggestiva, è caratterizzata da paesaggi montuosi e costieri, con le imponenti Dolomiti Lucane e le spiagge del Mar Ionio. Famosa per i Sassi di Matera, patrimonio UNESCO di inestimabile valore, e per la sua autenticità rurale, offre un viaggio nel tempo e nella natura.</p>
     </div>
 
     <div id="region_IT-78" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Calabria</h3>
         <p>La Calabria, punta dello stivale italiano, affascina con le sue coste bagnate dal Mar Ionio e Tirreno, e una storia millenaria che si riflette in siti archeologici e tradizioni. Offre montagne selvagge, spiagge incantevoli e una gastronomia mediterranea dai sapori intensi e piccanti.</p>
     </div>
 
     <div id="region_IT-72" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Campania</h3>
         <p>La Campania è un vero concentrato di storia, arte e bellezza naturale. Con città come Napoli, l'imponente Vesuvio, gli scavi di Pompei ed Ercolano, e le splendide isole di Capri e Ischia, offre un mix vibrante di cultura millenaria, paesaggi mozzafiato e una cucina rinomata a livello mondiale.</p>
     </div>
 
     <div id="region_IT-45" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Emilia-Romagna</h3>
         <p>L'Emilia-Romagna è la 'Food Valley' d'Italia, un paradiso per i buongustai celebre per prodotti come Parmigiano Reggiano, Prosciutto di Parma e Aceto Balsamico. Oltre alla sua rinomata gastronomia, vanta città d'arte come Bologna, Parma e Ferrara, e le vivaci spiagge della Riviera Romagnola.</p>
     </div>
 
     <div id="region_IT-36" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Friuli-Venezia Giulia</h3>
         <p>Il Friuli-Venezia Giulia è una regione di confine, un crocevia di culture con paesaggi diversi che vanno dalle maestose Alpi alle coste del Mar Adriatico. Offre un patrimonio culturale ricco di influenze latine, slave e germaniche, borghi storici, vigneti di eccellenza e un'atmosfera unica.</p>
     </div>
 
     <div id="region_IT-62" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Lazio</h3>
         <p>Il Lazio, con Roma come capitale eterna, è il cuore pulsante dell'antica civiltà romana e della Chiesa Cattolica. Offre un'incredibile varietà di siti archeologici, musei, laghi vulcanici, coste e una campagna ricca di storia, tradizioni e tesori nascosti.</p>
     </div>
 
     <div id="region_IT-42" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Liguria</h3>
         <p>La Liguria è una stretta fascia costiera incastonata tra le Alpi e il Mar Ligure, famosa per le pittoresche Cinque Terre, l'elegante Portofino e la storica Genova. Caratterizzata da borghi colorati, scogliere a picco sul mare e una cucina semplice ma gustosa, è un gioiello mediterraneo.</p>
     </div>
 
     <div id="region_IT-25" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Lombardia</h3>
         <p>La Lombardia, con Milano, è il centro economico, della moda e del design italiano, ma offre anche città d'arte ricche di storia, i suggestivi laghi prealpini (Como, Garda, Maggiore) e le imponenti Alpi. Un mix dinamico di innovazione, cultura e bellezze naturali.</p>
     </div>
 
     <div id="region_IT-57" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Marche</h3>
         <p>Le Marche sono una regione che si estende dalle dolci colline dell'entroterra fino alla costa adriatica, con un paesaggio costellato di borghi medievali, città d'arte rinascimentali e spiagge tranquille. Offre un'esperienza autentica, lontana dal turismo di massa, tra arte, natura e tradizioni.</p>
     </div>
 
     <div id="region_IT-67" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Molise</h3>
         <p>Il Molise è una delle regioni più piccole e meno conosciute d'Italia, un vero e proprio scrigno di bellezze naturali e autenticità. Offre paesaggi incontaminati, montagne, colline e un breve tratto di costa adriatica, custode di borghi medievali, tradizioni antiche e un ritmo di vita lento e genuino.</p>
     </div>
 
     <div id="region_IT-21" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Piemonte</h3>
         <p>Il Piemonte è una regione di straordinaria varietà, con le maestose Alpi, le dolci colline delle Langhe e del Monferrato (patrimonio UNESCO) e ampie pianure. Famosa per i suoi vini pregiati (Barolo, Barbaresco), i tartufi e il cioccolato, ha in Torino, l'antica capitale sabauda, un fulcro di storia, cultura e innovazione.</p>
     </div>
 
     <div id="region_IT-75" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Puglia</h3>
         <p>La Puglia è il 'tacco' d'Italia, incantevole con le sue lunghe coste bagnate dal Mar Adriatico e Ionio, i caratteristici trulli di Alberobello, le affascinanti città bianche e una cucina mediterranea che celebra i sapori autentici della terra e del mare. Famosa per il suo mare cristallino e l'ottimo olio d'oliva.</p>
     </div>
 
     <div id="region_IT-88" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Sardegna</h3>
         <p>La Sardegna è un'isola dalla bellezza selvaggia e incontaminata, con coste mozzafiato, spiagge che ricordano i Caraibi, un entroterra montuoso e una cultura antica e misteriosa. Offre un mare cristallino, siti archeologici nuragici unici al mondo e una cucina autentica di mare e di terra.</p>
     </div>
 
     <div id="region_IT-82" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Sicilia</h3>
         <p>La Sicilia è l'isola più grande del Mediterraneo, un crocevia di civiltà con una storia millenaria che ha lasciato un'eredità di templi greci, teatri romani e palazzi barocchi. Famosa per l'imponente vulcano Etna, il mare cristallino e la sua cucina ricca di sapori e influenze diverse.</p>
     </div>
 
     <div id="region_IT-52" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Toscana</h3>
         <p>La Toscana è l'emblema del Rinascimento italiano, con città d'arte iconiche come Firenze, Siena e Pisa, che custodiscono capolavori inestimabili. Offre paesaggi collinari da cartolina, vigneti dove nasce il celebre Chianti e una cucina rinomata a livello mondiale. Un classico intramontabile dell'Italia.</p>
     </div>
 
     <div id="region_IT-32" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Trentino-Alto Adige</h3>
         <p>Il Trentino-Alto Adige è una regione alpina bilingue (italiano e tedesco), incorniciata dalle maestose Dolomiti (patrimonio UNESCO), laghi alpini e città affascinanti come Trento e Bolzano. È il paradiso per gli sport invernali e per un turismo montano all'insegna della natura e della tranquillità.</p>
     </div>
 
     <div id="region_IT-55" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Umbria</h3>
         <p>L'Umbria, il 'cuore verde d'Italia', è una regione collinare senza sbocco sul mare, ricca di spiritualità e di borghi medievali intatti come Assisi e Perugia. Offre laghi suggestivi (Trasimeno) e una ricca tradizione enogastronomica, rappresentando un'alternativa più tranquilla e autentica alla vicina Toscana.</p>
     </div>
 
     <div id="region_IT-34" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Veneto</h3>
         <p>Il Veneto, con Venezia, è una regione ricca di storia, arte e paesaggi diversificati, dalle cime maestose delle Dolomiti alle coste adriatiche. Offre ville palladiane di rara bellezza, città d'arte uniche al mondo e una forte tradizione enogastronomica che spazia dai vini ai piatti tipici.</p>
     </div>
 
     <div id="region_IT-23" class="region-box">
-        <button class="close-button">&times;</button>
+        <button class="close-button" aria-label="Chiudi box">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F6EEDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
         <h3>Valle d'Aosta</h3>
         <p>La Valle d'Aosta è la più piccola regione d'Italia, interamente circondata dalle vette più alte delle Alpi (Monte Bianco, Cervino, Monte Rosa). È un paradiso per gli sport invernali e l'alpinismo, arricchito da castelli medievali, terme e una cultura alpina unica.</p>
     </div>
@@ -334,6 +467,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 targetBox.classList.add('active');
 
                 path.classList.add('selected');
+              path.style.transform = 'scale(1.05)';
+setTimeout(() => {
+  path.style.transform = '';
+}, 150);
                 selectedPath = path;
             }
         });
