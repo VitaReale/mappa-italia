@@ -155,25 +155,78 @@ path.selected {
 
   /* NORD ITALIA */
 path.nord {
-  filter: brightness(1.05);
-}
-
-/* SUD ITALIA */
-path.sud {
-  filter: brightness(0.92);
-}
-
-path.nord {
-  fill: #5C8A79;
+  stroke: rgba(255,255,255,0.5);
+  stroke-width: 1.5;
 }
 
 path.sud {
-  fill: #7A5C47;
+  stroke: rgba(0,0,0,0.3);
+  stroke-width: 1.5;
+}
+
+  #departmentLabels {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 16px;
+  animation: fadeIn 0.6s ease;
+}
+
+#departmentLabels button {
+  background-color: #647F76;
+  color: #F6EEDF;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+#departmentLabels button:hover {
+  background-color: #CAA15A;
+  transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 800px;
+}
+#tooltip {
+  position: absolute;
+  display: none;
+  background: rgba(51, 51, 51, 0.9);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
 }
   
 </style>
 </head>
 <body>
+
+  <div id="departmentLabels">
+  <button id="highlightNord">Nord Italia</button>
+  <button id="highlightSud">Sud Italia</button>
+  <button id="resetView">Mostra Tutto</button>
+</div>
 
 <div id="tooltip"></div>
     <svg width="800" height="600" viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
@@ -537,6 +590,36 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+const highlightNord = document.getElementById('highlightNord');
+const highlightSud = document.getElementById('highlightSud');
+const resetView = document.getElementById('resetView');
+
+highlightNord.addEventListener('click', () => {
+  paths.forEach(path => {
+    if (path.classList.contains('nord')) {
+      path.style.opacity = '1';
+    } else {
+      path.style.opacity = '0.2';
+    }
+  });
+});
+
+highlightSud.addEventListener('click', () => {
+  paths.forEach(path => {
+    if (path.classList.contains('sud')) {
+      path.style.opacity = '1';
+    } else {
+      path.style.opacity = '0.2';
+    }
+  });
+});
+
+resetView.addEventListener('click', () => {
+  paths.forEach(path => {
+    path.style.opacity = '1';
+  });
+});
+  
 });
 </script>
 
