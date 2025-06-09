@@ -16,10 +16,23 @@ path:hover {
   cursor: pointer;
 }
 
+@keyframes pulseRegion {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 path.selected {
   fill: #CAA15A !important;
   filter: drop-shadow(0 0 6px rgba(202,161,90,0.6));
-  transition: filter 0.3s ease;
+  transform-origin: center;
+  animation: pulseRegion 0.3s ease;
 }
 
 /* Tooltip */
@@ -467,10 +480,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 targetBox.classList.add('active');
 
                 path.classList.add('selected');
-              path.style.transform = 'scale(1.05)';
-setTimeout(() => {
-  path.style.transform = '';
-}, 150);
                 selectedPath = path;
             }
         });
