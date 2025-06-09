@@ -153,6 +153,24 @@ path.selected {
   transition: stroke 0.3s ease;
 }
 
+  /* NORD ITALIA */
+path.nord {
+  filter: brightness(1.05);
+}
+
+/* SUD ITALIA */
+path.sud {
+  filter: brightness(0.92);
+}
+
+path.nord {
+  fill: #5C8A79;
+}
+
+path.sud {
+  fill: #7A5C47;
+}
+  
 </style>
 </head>
 <body>
@@ -446,6 +464,11 @@ document.addEventListener('DOMContentLoaded', function() {
     paths.forEach(path => {
         const regionId = path.getAttribute('id');
         const targetBoxId = `region_${regionId}`;
+       const nord = ["IT-21", "IT-25", "IT-34", "IT-32", "IT-36", "IT-42", "IT-45", "IT-52", "IT-55", "IT-57", "IT-23"];
+      const sud = ["IT-62", "IT_65", "IT-67", "IT-72", "IT-75", "IT-77", "IT-78", "IT-82", "IT-88"];
+
+      if (nord.includes(regionId)) path.classList.add("nord");
+        if (sud.includes(regionId)) path.classList.add("sud");
 
         path.addEventListener('mousemove', event => {
             const title = regionNamesMap[regionId] || path.getAttribute('title');
