@@ -32,6 +32,7 @@ path.selected {
   fill: #CAA15A !important;
   filter: drop-shadow(0 0 6px rgba(202,161,90,0.6));
   transform-origin: center;
+  transform-box: fill-box;
   animation: pulseRegion 0.3s ease;
 }
 
@@ -138,21 +139,20 @@ path.selected {
   right: 12px;
   background: none;
   border: none;
-  font-size: 20px;
-  color: #F6EEDF;
+  color: #F6EEDF; 
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.3s ease;
 }
 
 .close-button:hover {
-  color: #CAA15A;
+  color: #CAA15A; 
 }
 
-/* Per far sì che l’SVG segua il colore */
 .close-button svg {
   stroke: currentColor;
   transition: stroke 0.3s ease;
 }
+
 </style>
 </head>
 <body>
