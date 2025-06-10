@@ -487,11 +487,6 @@ svg {
       let selectedPath = null;
 
 
-const svgNord = document.getElementById('svgNord');
-const svgSud = document.getElementById('svgSud');
-const nord = ["IT-21", "IT-25", "IT-34", "IT-32", "IT-36", "IT-42", "IT-45", "IT-52", "IT-55", "IT-57", "IT-23"];
-const sud = ["IT-62", "IT_65", "IT-67", "IT-72", "IT-75", "IT-77", "IT-78", "IT-82", "IT-88"];
-
 // Inizia dopo aver ottenuto tutti i path (es. da SVG incluso altrove)
 document.querySelectorAll('svg path').forEach(path => {
   const id = path.getAttribute('id');
