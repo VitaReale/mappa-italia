@@ -184,22 +184,21 @@ svg {
   
 #mapWrapper {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 40px;
-  max-width: 100%;
-  padding: 0 20px;
-  flex-wrap: wrap; /* Questo evita che si sovrappongano su schermi piccoli */
+  justify-content: center;
+  gap: 60px;
+  padding: 20px;
+  flex-wrap: wrap;
 }
 
 .column {
-  flex: 1 1 48%;
-  min-width: 320px;
+  flex: 1 1 45%;
+  min-width: 400px;
 }
 
 #svgNord, #svgSud {
-  width: 48%;
+  width: 100%;
   height: auto;
+  max-width: 100%;
 }
 
   .label-colonna {
@@ -488,9 +487,8 @@ svg {
       let selectedPath = null;
 
 
-    paths.forEach(path => {
-        const regionId = path.getAttribute('id');
-        const targetBoxId = `region_${regionId}`;
+const svgNord = document.getElementById('svgNord');
+const svgSud = document.getElementById('svgSud');
 const nord = ["IT-21", "IT-25", "IT-34", "IT-32", "IT-36", "IT-42", "IT-45", "IT-52", "IT-55", "IT-57", "IT-23"];
 const sud = ["IT-62", "IT_65", "IT-67", "IT-72", "IT-75", "IT-77", "IT-78", "IT-82", "IT-88"];
 
@@ -514,7 +512,7 @@ document.querySelectorAll('svg path').forEach(path => {
             document.querySelectorAll('path').forEach(path => {
         const regionId = path.getAttribute('id');
         const targetBoxId = `region_${regionId}`;
-
+              
         path.addEventListener('mousemove', event => {
             const title = regionNamesMap[regionId] || path.getAttribute('title');
             if (tooltip && title) {
