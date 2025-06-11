@@ -27,7 +27,6 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      background-color: rgba(0, 0, 0, 0.03); /* solo per debug visivo */
     }
 
     .label-colonna {
@@ -84,19 +83,20 @@
       box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
 
-#regionBoxesContainer {
-  display: flex;
-  justify-content: center;
-  gap: 60px;
-  margin-top: 20px;
-}
+    #regionBoxesContainer {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-top: 20px;
+    }
 
-.column-box {
-  width: 45%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+    .column-box {
+      width: 45%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     .region-box {
       display: none;
       opacity: 0;
@@ -407,15 +407,17 @@
         <h3>Valle d'Aosta</h3>
         <p>La Valle d'Aosta è la più piccola regione d'Italia, interamente circondata dalle vette più alte delle Alpi (Monte Bianco, Cervino, Monte Rosa). È un paradiso per gli sport invernali e l'alpinismo, arricchito da castelli medievali, terme e una cultura alpina unica.</p>
     </div>
+    
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const svgNord = document.getElementById('svgNord');
     const svgSud = document.getElementById('svgSud');
     const tooltip = document.getElementById('tooltip');
-const nordBoxContainer = document.querySelector('.nord-boxes');
-const sudBoxContainer = document.querySelector('.sud-boxes');
-const allBoxes = document.querySelectorAll('.region-box');
+    const nordBoxContainer = document.querySelector('.nord-boxes');
+    const sudBoxContainer = document.querySelector('.sud-boxes');
+    const allBoxes = document.querySelectorAll('.region-box');
     const closeButtons = document.querySelectorAll('.close-button');
+
     const nord = ["IT-21", "IT-25", "IT-34", "IT-32", "IT-36", "IT-42", "IT-45", "IT-52", "IT-55", "IT-57", "IT-23"];
     const sud = ["IT-62", "IT_65", "IT-67", "IT-72", "IT-75", "IT-77", "IT-78", "IT-82", "IT-88"];
 
@@ -430,17 +432,11 @@ const allBoxes = document.querySelectorAll('.region-box');
     document.querySelectorAll('path').forEach(path => {
       const regionId = path.getAttribute('id');
       const targetBoxId = `region_${regionId}`;
-      if (targetBox && !targetBox.parentElement.classList.contains('column-box')) {
-  if (nord.includes(regionId)) {
-    nordBoxContainer.appendChild(targetBox);
-  } else if (sud.includes(regionId)) {
-    sudBoxContainer.appendChild(targetBox);
-  }
-}
 
       path.addEventListener('mousemove', event => {
-        if (tooltip) {
-          tooltip.innerHTML = path.getAttribute('title') || regionId;
+        const title = path.getAttribute('title') || regionId;
+        if (tooltip && title) {
+          tooltip.innerHTML = title;
           tooltip.style.display = 'block';
           tooltip.style.left = (event.pageX + 10) + 'px';
           tooltip.style.top = (event.pageY + 10) + 'px';
@@ -448,14 +444,21 @@ const allBoxes = document.querySelectorAll('.region-box');
       });
 
       path.addEventListener('mouseleave', () => {
-        if (tooltip) {
-          tooltip.style.display = 'none';
-          tooltip.innerHTML = '';
-        }
+        tooltip.style.display = 'none';
+        tooltip.innerHTML = '';
       });
 
       path.addEventListener('click', () => {
         const targetBox = document.getElementById(targetBoxId);
+        if (!targetBox) return;
+
+        if (!targetBox.parentElement.classList.contains('column-box')) {
+          if (nord.includes(regionId)) {
+            nordBoxContainer.appendChild(targetBox);
+          } else if (sud.includes(regionId)) {
+            sudBoxContainer.appendChild(targetBox);
+          }
+        }
 
         if (selectedPath) selectedPath.classList.remove('selected');
 
@@ -466,13 +469,11 @@ const allBoxes = document.querySelectorAll('.region-box');
           }
         });
 
-        if (targetBox) {
-          targetBox.style.display = 'block';
-          void targetBox.offsetWidth;
-          targetBox.classList.add('active');
-          path.classList.add('selected');
-          selectedPath = path;
-        }
+        targetBox.style.display = 'block';
+        void targetBox.offsetWidth;
+        targetBox.classList.add('active');
+        path.classList.add('selected');
+        selectedPath = path;
       });
     });
 
@@ -494,39 +495,37 @@ const allBoxes = document.querySelectorAll('.region-box');
         }
       });
     });
+
+    // Dynamic viewBox setting
+    ['svgNord', 'svgSud'].forEach(svgId => {
+      const svg = document.getElementById(svgId);
+      if (!svg) return;
+
+      const paths = svg.querySelectorAll('path');
+      if (paths.length === 0) return;
+
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      paths.forEach(path => {
+        const bbox = path.getBBox();
+        minX = Math.min(minX, bbox.x);
+        minY = Math.min(minY, bbox.y);
+        maxX = Math.max(maxX, bbox.x + bbox.width);
+        maxY = Math.max(maxY, bbox.y + bbox.height);
+      });
+
+      let width = maxX - minX;
+      let height = maxY - minY;
+
+      if (svgId === 'svgNord') {
+        const scale = 0.9;
+        const extraWidth = width * (1 - scale);
+        const extraHeight = height * (1 - scale);
+        svg.setAttribute('viewBox', `${minX - extraWidth / 2} ${minY - extraHeight / 2} ${width * scale} ${height * scale}`);
+      } else {
+        svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
+      }
+    });
   });
-
-// Imposta automaticamente il viewBox corretto per svgNord e svgSud
-['svgNord', 'svgSud'].forEach(svgId => {
-  const svg = document.getElementById(svgId);
-  if (!svg) return;
-
-  const paths = svg.querySelectorAll('path');
-  if (paths.length === 0) return;
-
-  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-
-  paths.forEach(path => {
-    const bbox = path.getBBox();
-    minX = Math.min(minX, bbox.x);
-    minY = Math.min(minY, bbox.y);
-    maxX = Math.max(maxX, bbox.x + bbox.width);
-    maxY = Math.max(maxY, bbox.y + bbox.height);
-  });
-
-  const width = maxX - minX;
-  const height = maxY - minY;
-  
-if (svgId === 'svgSud') {
-  const scale = 1.1; // 10% in più
-  const extraWidth = width * (scale - 1);
-  const extraHeight = height * (scale - 1);
-  svg.setAttribute('viewBox', `${minX - extraWidth / 2} ${minY - extraHeight / 2} ${width * scale} ${height * scale}`);
-} else {
-  svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
-}
-});
-  
 </script>
 
 </body>
