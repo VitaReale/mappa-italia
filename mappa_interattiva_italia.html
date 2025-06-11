@@ -84,16 +84,19 @@
       box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
 
-    #regionBoxesContainer {
-      position: absolute;
-      top: 60px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 420px;
-      max-width: 90%;
-      z-index: 9998;
-    }
+#regionBoxesContainer {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-top: 20px;
+}
 
+.column-box {
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
     .region-box {
       display: none;
       opacity: 0;
@@ -183,6 +186,8 @@
   <div id="tooltip"></div>
 
   <div id="regionBoxesContainer">
+      <div class="column-box nord-boxes"></div>
+  <div class="column-box sud-boxes"></div>
     <div id="region_IT_65" class="region-box">
 <button class="close-button" aria-label="Chiudi box">
   <svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -407,7 +412,9 @@
     const svgNord = document.getElementById('svgNord');
     const svgSud = document.getElementById('svgSud');
     const tooltip = document.getElementById('tooltip');
-    const regionBoxes = document.querySelectorAll('.region-box');
+const nordBoxContainer = document.querySelector('.nord-boxes');
+const sudBoxContainer = document.querySelector('.sud-boxes');
+const allBoxes = document.querySelectorAll('.region-box');
     const closeButtons = document.querySelectorAll('.close-button');
     const nord = ["IT-21", "IT-25", "IT-34", "IT-32", "IT-36", "IT-42", "IT-45", "IT-52", "IT-55", "IT-57", "IT-23"];
     const sud = ["IT-62", "IT_65", "IT-67", "IT-72", "IT-75", "IT-77", "IT-78", "IT-82", "IT-88"];
@@ -423,6 +430,13 @@
     document.querySelectorAll('path').forEach(path => {
       const regionId = path.getAttribute('id');
       const targetBoxId = `region_${regionId}`;
+      if (targetBox && !targetBox.parentElement.classList.contains('column-box')) {
+  if (nord.includes(regionId)) {
+    nordBoxContainer.appendChild(targetBox);
+  } else if (sud.includes(regionId)) {
+    sudBoxContainer.appendChild(targetBox);
+  }
+}
 
       path.addEventListener('mousemove', event => {
         if (tooltip) {
@@ -445,7 +459,7 @@
 
         if (selectedPath) selectedPath.classList.remove('selected');
 
-        regionBoxes.forEach(box => {
+        allBoxes.forEach(box => {
           if (box !== targetBox) {
             box.classList.remove('active');
             box.style.display = '';
@@ -502,8 +516,15 @@
 
   const width = maxX - minX;
   const height = maxY - minY;
-
+  
+if (svgId === 'svgSud') {
+  const scale = 1.1; // 10% in più
+  const extraWidth = width * (scale - 1);
+  const extraHeight = height * (scale - 1);
+  svg.setAttribute('viewBox', `${minX - extraWidth / 2} ${minY - extraHeight / 2} ${width * scale} ${height * scale}`);
+} else {
   svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
+}
 });
   
 </script>
