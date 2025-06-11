@@ -11,12 +11,35 @@
       font-family: 'Helvetica Neue', sans-serif;
     }
 
+    #mainContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    #regionBoxesContainer {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      width: 100%;
+      max-width: 1100px;
+      margin-top: 40px;
+    }
+
+    .column-box {
+      width: 45%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     #mapWrapper {
       display: flex;
       justify-content: center;
       align-items: stretch;
       gap: 60px;
-      padding: 40px 20px;
+      padding: 20px;
       height: 700px;
     }
 
@@ -83,20 +106,6 @@
       box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
 
-    #regionBoxesContainer {
-      display: flex;
-      justify-content: center;
-      gap: 60px;
-      margin-top: 20px;
-    }
-
-    .column-box {
-      width: 45%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
     .region-box {
       display: none;
       opacity: 0;
@@ -108,6 +117,7 @@
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
       position: relative;
       color: #F6EEDF;
+      max-width: 100%;
     }
 
     .region-box.active {
@@ -407,8 +417,7 @@
         <h3>Valle d'Aosta</h3>
         <p>La Valle d'Aosta è la più piccola regione d'Italia, interamente circondata dalle vette più alte delle Alpi (Monte Bianco, Cervino, Monte Rosa). È un paradiso per gli sport invernali e l'alpinismo, arricchito da castelli medievali, terme e una cultura alpina unica.</p>
     </div>
-    
-<script>
+ <script>
   document.addEventListener('DOMContentLoaded', function () {
     const svgNord = document.getElementById('svgNord');
     const svgSud = document.getElementById('svgSud');
