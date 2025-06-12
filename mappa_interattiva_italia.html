@@ -148,26 +148,27 @@
       z-index: 1000;
       box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
-
 @media (max-width: 768px) {
-  .column {
-    flex: 1 1 100%;
-  }
-
   #mapWrapper {
     flex-direction: column;
+    gap: 40px;
+  }
+
+  .column {
+    width: 100%;
     align-items: center;
+  }
+
+  svg {
+    max-width: 100%;
+    height: auto;
   }
 
   .region-box {
     max-width: 90%;
-    padding: 20px;
-  }
-
-  svg {
-    max-width: 95%;
   }
 }
+
  
   </style>
 </head>
