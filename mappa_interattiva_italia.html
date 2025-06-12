@@ -47,18 +47,22 @@
       justify-content: center;
     }
 
-    .region-box {
-      display: none;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
-      padding: 24px;
-      background-color: #CAA15A;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-      color: #F6EEDF;
-      max-width: 90%;
-    }
+.region-box {
+  display: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  padding: 24px;
+  background-color: #CAA15A;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  color: #F6EEDF;
+
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto; /* centra il box */
+  box-sizing: border-box;
+}
 
     .region-box.active {
       display: block;
@@ -104,7 +108,7 @@
     }
 
     #svgSud {
-      transform: scale(1.1);
+      transform: scale(1);
       transform-origin: center;
     }
 
@@ -144,6 +148,27 @@
       z-index: 1000;
       box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
+
+@media (max-width: 768px) {
+  .column {
+    flex: 1 1 100%;
+  }
+
+  #mapWrapper {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .region-box {
+    max-width: 90%;
+    padding: 20px;
+  }
+
+  svg {
+    max-width: 95%;
+  }
+}
+ 
   </style>
 </head>
 <body>
