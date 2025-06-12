@@ -409,6 +409,24 @@
         <p>La Valle d'Aosta è la più piccola regione d'Italia, interamente circondata dalle vette più alte delle Alpi (Monte Bianco, Cervino, Monte Rosa). È un paradiso per gli sport invernali e l'alpinismo, arricchito da castelli medievali, terme e una cultura alpina unica.</p>
     </div>
 <script>
+
+    function autoSetViewBox(svg) {
+    const paths = svg.querySelectorAll('path');
+    if (paths.length === 0) return;
+
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    paths.forEach(p => {
+      const box = p.getBBox();
+      minX = Math.min(minX, box.x);
+      minY = Math.min(minY, box.y);
+      maxX = Math.max(maxX, box.x + box.width);
+      maxY = Math.max(maxY, box.y + box.height);
+    });
+    const width = maxX - minX;
+    const height = maxY - minY;
+    svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
+  }
+  
 document.addEventListener('DOMContentLoaded', function () {
   const svgNord = document.getElementById('svgNord');
   const svgSud = document.getElementById('svgSud');
@@ -427,6 +445,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (nord.includes(id)) svgNord.appendChild(path);
     else if (sud.includes(id)) svgSud.appendChild(path);
   });
+
+  autoSetViewBox(svgNord);
+autoSetViewBox(svgSud);
 
   document.querySelectorAll('path').forEach(path => {
     const regionId = path.getAttribute('id');
