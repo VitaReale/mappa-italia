@@ -96,21 +96,13 @@
       color: #2B282A;
     }
 
-    svg {
-      width: 100%;
-      height: auto;
-      max-width: 450px;
-    }
-
-    #svgNord {
-      transform: scale(0.9);
-      transform-origin: center;
-    }
-
-    #svgSud {
-      transform: scale(1);
-      transform-origin: center;
-    }
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  width: 100%;
+  margin: 0 auto;
+}
 
     path {
       fill: #647F76;
@@ -148,24 +140,23 @@
       z-index: 1000;
       box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
+    
 @media (max-width: 768px) {
   #mapWrapper {
     flex-direction: column;
+    align-items: center;
     gap: 40px;
   }
 
   .column {
     width: 100%;
-    align-items: center;
-  }
-
-  svg {
     max-width: 100%;
-    height: auto;
+    padding: 0 10px;
   }
 
   .region-box {
-    max-width: 90%;
+    max-width: 95%;
+    width: 100%;
   }
 }
 
