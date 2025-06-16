@@ -19,14 +19,15 @@
       padding: 40px 20px;
     }
 
-    .column {
-      flex: 1 1 45%;
-      min-width: 400px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-    }
+.column {
+  flex: 1 1 45%;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
 
     .label-colonna {
       font-size: 20px;
@@ -98,10 +99,11 @@
 
 svg {
   display: block;
-  max-width: 100%;
+  max-width: 90%;
+  width: 90%;
   height: auto;
-  width: 100%;
   margin: 0 auto;
+  aspect-ratio: 3 / 4;
 }
 
     path {
@@ -140,6 +142,11 @@ svg {
       z-index: 1000;
       box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
+
+        html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
     
 @media (max-width: 768px) {
   #mapWrapper {
@@ -154,12 +161,17 @@ svg {
     padding: 0 10px;
   }
 
+svg {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+}
+  
   .region-box {
     max-width: 95%;
     width: 100%;
   }
 }
-
  
   </style>
 </head>
