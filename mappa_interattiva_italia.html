@@ -12,24 +12,26 @@
       overflow-x: hidden;
     }
 
-    #mapWrapper {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 40px;
-      padding: 20px;
-      flex-wrap: wrap;
-    }
+#mapWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  padding: 20px;
+  gap: 40px;
+  box-sizing: border-box;
+}
 
-    .column {
-      flex: 1 1 400px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      max-width: 600px;
-    }
+.column {
+  flex: 1 1 400px;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
 
     .label-colonna {
       font-size: 20px;
@@ -136,28 +138,31 @@
       box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
 
-    @media (max-width: 768px) {
-      #mapWrapper {
-        flex-direction: column;
-        align-items: center;
-      }
+@media (max-width: 768px) {
+  #mapWrapper {
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px;
+  }
 
-      .column {
-        width: 100%;
-        max-width: 100%;
-        padding: 0 10px;
-      }
+  .column {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 10px;
+  }
 
-      svg {
-        width: 100%;
-        max-width: 100%;
-      }
+  svg {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
 
-      .region-box {
-        max-width: 95%;
-        width: 100%;
-      }
-    }
+  .region-box {
+    max-width: 95%;
+    width: 100%;
+  }
+}
+
   </style>
 </head>
 <body>
