@@ -9,25 +9,27 @@
       margin: 0;
       background-color: #f6eedf;
       font-family: 'Helvetica Neue', sans-serif;
+      overflow-x: hidden;
     }
 
     #mapWrapper {
       display: flex;
+      flex-direction: row;
       justify-content: center;
-      align-items: stretch;
-      gap: 60px;
-      padding: 40px 20px;
+      align-items: flex-start;
+      gap: 40px;
+      padding: 20px;
+      flex-wrap: wrap;
     }
 
-.column {
-  flex: 1 1 45%;
-  min-width: 300px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
+    .column {
+      flex: 1 1 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      max-width: 600px;
+    }
 
     .label-colonna {
       font-size: 20px;
@@ -38,32 +40,25 @@
     }
 
     .regionBoxesContainer {
-      position: absolute;
-      top: 50px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
+      position: relative;
       width: 100%;
       display: flex;
       justify-content: center;
+      margin-bottom: 20px;
     }
 
-.region-box {
-  display: none;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  padding: 24px;
-  background-color: #CAA15A;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  color: #F6EEDF;
-
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto; /* centra il box */
-  box-sizing: border-box;
-}
+    .region-box {
+      display: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      padding: 20px;
+      background-color: #CAA15A;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      color: #F6EEDF;
+      max-width: 95%;
+    }
 
     .region-box.active {
       display: block;
@@ -97,14 +92,12 @@
       color: #2B282A;
     }
 
-svg {
-  display: block;
-  max-width: 90%;
-  width: 90%;
-  height: auto;
-  margin: 0 auto;
-  aspect-ratio: 3 / 4;
-}
+    svg {
+      display: block;
+      max-width: 90%;
+      width: 90%;
+      height: auto;
+    }
 
     path {
       fill: #647F76;
@@ -143,36 +136,28 @@ svg {
       box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
 
-        html, body {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-    
-@media (max-width: 768px) {
-  #mapWrapper {
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
-  }
+    @media (max-width: 768px) {
+      #mapWrapper {
+        flex-direction: column;
+        align-items: center;
+      }
 
-  .column {
-    width: 100%;
-    max-width: 100%;
-    padding: 0 10px;
-  }
+      .column {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 10px;
+      }
 
-svg {
-  max-width: 100%;
-  width: 100%;
-  height: auto;
-}
-  
-  .region-box {
-    max-width: 95%;
-    width: 100%;
-  }
-}
- 
+      svg {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .region-box {
+        max-width: 95%;
+        width: 100%;
+      }
+    }
   </style>
 </head>
 <body>
