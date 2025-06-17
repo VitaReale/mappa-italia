@@ -14,26 +14,30 @@ html, body {
   box-sizing: border-box;
 }
 
-    #mapWrapper {
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: row;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 40px;
-      padding: 20px;
-    }
-
-    .column {
-      flex: 1 1 400px;
-      max-width: 600px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      position: relative;
-      box-sizing: border-box;
-    }
+#mapWrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 40px;
+  padding: 20px;
+  max-width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+    
+.column {
+  flex: 1 1 400px;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  box-sizing: border-box;
+  overflow: hidden;
+}
 
     .label-colonna {
       font-size: 20px;
@@ -49,29 +53,29 @@ html, body {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 10;
+  z-index: 20;
   display: flex;
   justify-content: center;
   align-items: center;
   pointer-events: none;
 }
 
-    .region-box {
-      display: none;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
-      padding: 20px;
-      background-color: #CAA15A;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-      color: #F6EEDF;
-      max-width: 90%;
-      width: 100%;
-        pointer-events: auto;
+.region-box {
+  display: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  padding: 20px;
+  background-color: #CAA15A;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  color: #F6EEDF;
+  max-width: 95%;
+  width: 100%;
+  pointer-events: auto;
+  z-index: 30;
   position: relative;
-  z-index: 20;
-    }
+}
 
     .region-box.active {
       display: block;
@@ -148,30 +152,31 @@ svg {
       box-shadow: 0 3px 10px rgba(0,0,0,0.15);
     }
 
-    @media (max-width: 768px) {
-      #mapWrapper {
-        flex-direction: column;
-        padding: 10px;
-        gap: 20px;
-      }
+@media (max-width: 768px) {
+  #mapWrapper {
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    gap: 30px;
+  }
 
-      .column {
-        width: 100%;
-        max-width: 100%;
-        padding: 0 10px;
-      }
+  .column {
+    width: 100%;
+    max-width: 100%;
+    padding: 0 10px;
+  }
 
-      svg {
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-      }
+  svg {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+  }
 
-      .region-box {
-        max-width: 95%;
-        width: 100%;
-      }
-    }
+  .region-box {
+    max-width: 95%;
+  }
+}
+
   </style>
 </head>
 <body>
