@@ -5,12 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mappa Interattiva Italia</title>
   <style>
-
-    * {
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-}
     
 html, body {
   margin: 0;
@@ -229,6 +223,13 @@ svg {
     touch-action: manipulation;
     overscroll-behavior: none;
   }
+}
+
+    * {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
 }
     
   </style>
@@ -541,8 +542,8 @@ autoSetViewBox(svgSud);
     const targetBoxId = `region_${regionId}`;
     const targetBox = document.getElementById(targetBoxId);
     
-// Solo su dispositivi che NON sono touch (es. desktop)
-if (!window.matchMedia("(pointer: coarse)").matches) {
+// Blocca mousemove/hover su dispositivi touch
+if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
   path.addEventListener('mousemove', event => {
     const title = regionNamesMap[regionId] || path.getAttribute('title');
     if (tooltip && title) {
