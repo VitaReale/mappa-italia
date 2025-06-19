@@ -500,6 +500,22 @@ svg, svg * {
     </div>
 <script>
 
+  window.addEventListener('message', function(event) {
+  if (event.data?.type === 'clickForward') {
+    const { x, y } = event.data;
+
+    // Simula un click nella posizione ricevuta
+    const target = document.elementFromPoint(x, y);
+    if (target) {
+      target.dispatchEvent(new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      }));
+    }
+  }
+});
+
     function autoSetViewBox(svg) {
     const paths = svg.querySelectorAll('path');
     if (paths.length === 0) return;
