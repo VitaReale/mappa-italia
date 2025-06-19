@@ -516,6 +516,13 @@ svg, svg * {
     const height = maxY - minY;
     svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
   }
+
+    // Blocca trascinamento accidentale su touch
+document.addEventListener('touchmove', function(e) {
+  if (e.target.closest('svg')) {
+    e.preventDefault();
+  }
+}, { passive: false });
   
 document.addEventListener('DOMContentLoaded', function () {
   const svgNord = document.getElementById('svgNord');
@@ -529,13 +536,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const sud = ["IT-55", "IT-57", "IT-62", "IT_65", "IT-67", "IT-72", "IT-75", "IT-77", "IT-78", "IT-82", "IT-88"];
 
   let selectedPath = null;
-
-  // Blocca trascinamento accidentale su touch
-document.addEventListener('touchmove', function(e) {
-  if (e.target.closest('svg')) {
-    e.preventDefault();
-  }
-}, { passive: false });
 
   document.querySelectorAll('path').forEach(path => {
     const id = path.getAttribute('id');
