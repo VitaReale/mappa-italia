@@ -528,8 +528,8 @@ autoSetViewBox(svgSud);
     const targetBoxId = `region_${regionId}`;
     const targetBox = document.getElementById(targetBoxId);
     
-// Solo se non siamo su dispositivi touch
-if (!window.matchMedia("(pointer: coarse)").matches) {
+// Solo su dispositivi non touch (es. desktop)
+if (!('ontouchstart' in window)) {
   path.addEventListener('mousemove', event => {
     const title = regionNamesMap[regionId] || path.getAttribute('title');
     if (tooltip && title) {
