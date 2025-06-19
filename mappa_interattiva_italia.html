@@ -15,8 +15,8 @@ html, body {
   max-width: 100vw;
   max-height: 100vh;
   position: relative;
-  touch-action: none;
-  overscroll-behavior: none;
+  touch-action: pan-y; /* consente lo scroll verticale */
+  overscroll-behavior: contain;
   box-sizing: border-box;
   -webkit-overflow-scrolling: auto;
 }
@@ -527,18 +527,26 @@ autoSetViewBox(svgSud);
     const regionId = path.getAttribute('id');
     const targetBoxId = `region_${regionId}`;
     const targetBox = document.getElementById(targetBoxId);
-
-    path.addEventListener('mousemove', event => {
-      tooltip.innerHTML = path.getAttribute('title') || regionId;
+    
+// Solo se non siamo su dispositivi touch
+if (!window.matchMedia("(pointer: coarse)").matches) {
+  path.addEventListener('mousemove', event => {
+    const title = regionNamesMap[regionId] || path.getAttribute('title');
+    if (tooltip && title) {
+      tooltip.innerHTML = title;
       tooltip.style.display = 'block';
       tooltip.style.left = (event.pageX + 10) + 'px';
       tooltip.style.top = (event.pageY + 10) + 'px';
-    });
+    }
+  });
 
-    path.addEventListener('mouseleave', () => {
+  path.addEventListener('mouseleave', () => {
+    if (tooltip) {
       tooltip.style.display = 'none';
       tooltip.innerHTML = '';
-    });
+    }
+  });
+}
 
     path.addEventListener('click', () => {
       if (!targetBox) return;
