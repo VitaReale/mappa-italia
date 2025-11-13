@@ -501,6 +501,7 @@ svg, svg * {
         <p>La Valle d'Aosta è la più piccola regione d'Italia, interamente circondata dalle vette più alte delle Alpi (Monte Bianco, Cervino, Monte Rosa). È un paradiso per gli sport invernali e l'alpinismo, arricchito da castelli medievali, terme e una cultura alpina unica.</p>
     </div>
 <script>
+
 // Listener per click da mobile (Wix) - INVARIATO
 window.addEventListener('message', function(event) {
   if (event.data?.type === 'clickForward') {
@@ -543,7 +544,7 @@ document.addEventListener('touchmove', function(e) {
   
 document.addEventListener('DOMContentLoaded', function () {
   
-  // --- 1. IMPOSTAZIONI URL E REGIONI (MODIFICATE) ---
+  // --- 1. IMPOSTAZIONI URL E REGIONI ---
   
   // Definisci i link di destinazione
   const urlNord = "https://shop.vitareale.org";
@@ -553,17 +554,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const svgNord = document.getElementById('svgNord');
   const svgSud = document.getElementById('svgSud');
   const tooltip = document.getElementById('tooltip');
-  
-  // Variabili per i box pop-up rimosse (non più necessarie)
-  // const nordContainer = ...
-  // const sudContainer = ...
-  // const closeButtons = ...
 
-  // Array 'nord' e 'sud' (invariati, presi dal tuo script)
+  // Array 'nord' e 'sud' (dal tuo script)
+  // Assicurati che questi ID corrispondano ESATTAMENTE agli ID nei tuoi <path>
   const nord = ["IT-21", "IT-25", "IT-34", "IT-32", "IT-36", "IT-42", "IT-45", "IT-52", "IT-23"];
   const sud = ["IT-55", "IT-57", "IT-62", "IT_65", "IT-67", "IT-72", "IT-75", "IT-77", "IT-78", "IT-82", "IT-88"];
 
-  // 'selectedPath' rimosso (non più necessario)
 
   // --- 2. DIVISIONE SVG E VIEWBOX (INVARIATE) ---
   
@@ -583,11 +579,10 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('path').forEach(path => {
     const regionId = path.getAttribute('id');
     
-    // Logica Tooltip (quasi invariata)
+    // Logica Tooltip (ho rimosso 'regionNamesMap' che non era definito)
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
       path.addEventListener('mousemove', event => {
-        // Sostituito 'regionNamesMap' (che non era definito) con il 'title' del path
-        const title = path.getAttribute('title'); 
+        const title = path.getAttribute('title'); // Prende il titolo direttamente dal path
         if (tooltip && title) {
           tooltip.innerHTML = title;
           tooltip.style.display = 'block';
@@ -604,10 +599,10 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // --- LOGICA CLICK SOSTITUITA ---
-    // La vecchia logica che mostrava i box è stata rimossa.
+    // --- NUOVA LOGICA CLICK (SOSTITUITA) ---
     path.addEventListener('click', () => {
       let targetUrl = null;
+      console.log('Click rilevato su:', regionId); // DEBUG
 
       // Controlla se l'ID è nel gruppo NORD
       if (nord.includes(regionId)) {
@@ -618,27 +613,25 @@ document.addEventListener('DOMContentLoaded', function () {
         targetUrl = urlCentroSud;
       }
 
-      // Se abbiamo trovato un URL, reindirizziamo
+      // Se abbiamo trovato un URL, aprilo in una nuova scheda
       if (targetUrl) {
-        // Controlla che l'URL sia stato impostato
         if (targetUrl.startsWith("http")) {
-          // Usa window.top.location.href per cambiare l'URL 
-          // della pagina principale (Wix), non solo dell'iframe.
-          window.top.location.href = targetUrl;
+          console.log('Tentativo di apertura (nuova scheda):', targetUrl); // DEBUG
+          // APRE IN UNA NUOVA SCHEDA
+          window.open(targetUrl, '_blank');
         } else {
           console.warn('URL per Centro-Sud non ancora impostato.');
         }
       } else {
         // Avviso se un ID cliccabile non è in nessuna lista
-        console.warn('Regione non associata a un link:', regionId);
+        console.warn('ID non trovato nelle liste nord/sud:', regionId);
       }
     });
-    // --- FINE LOGICA CLICK SOSTITUITA ---
+    // --- FINE NUOVA LOGICA CLICK ---
   });
 
-  // Blocco 'closeButtons' rimosso (non più necessario)
+  // Tutta la logica per 'closeButtons' è stata rimossa perché non più necessaria
 });
 </script>
-
 </body>
 </html>
