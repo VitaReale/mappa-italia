@@ -501,7 +501,6 @@ svg, svg * {
         <p>La Valle d'Aosta è la più piccola regione d'Italia, interamente circondata dalle vette più alte delle Alpi (Monte Bianco, Cervino, Monte Rosa). È un paradiso per gli sport invernali e l'alpinismo, arricchito da castelli medievali, terme e una cultura alpina unica.</p>
     </div>
 <script>
-
 // Listener per click da mobile (Wix) - INVARIATO
 window.addEventListener('message', function(event) {
   if (event.data?.type === 'clickForward') {
@@ -517,7 +516,7 @@ window.addEventListener('message', function(event) {
   }
 });
 
-// Funzione per impostare il viewBox - INVARIATA
+// Funzioni utility - INVARIANTI
 function autoSetViewBox(svg) {
   const paths = svg.querySelectorAll('path');
   if (paths.length === 0) return;
@@ -533,8 +532,6 @@ function autoSetViewBox(svg) {
   const height = maxY - minY;
   svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
 }
-
-// Blocca trascinamento accidentale su touch - INVARIATO
 document.addEventListener('touchmove', function(e) {
   if (e.target.closest('svg')) {
     e.preventDefault();
@@ -546,19 +543,15 @@ document.addEventListener('DOMContentLoaded', function () {
   // --- 1. IMPOSTAZIONI URL E REGIONI ---
   
   const urlNord = "https://shop.vitareale.org";
-  const urlCentroSud = "https://speranzaperognicasa.wixstudio.com/vita-reale/home"; // <-- MODIFICA QUI
+  const urlCentroSud = "INSERISCI_QUI_IL_LINK_PER_IL_CENTRO_SUD"; // <-- MODIFICA QUI
 
   const svgNord = document.getElementById('svgNord');
   const svgSud = document.getElementById('svgSud');
   const tooltip = document.getElementById('tooltip');
-
-  // Array 'nord' e 'sud' (dal tuo script)
+  
   const nord = ["IT-21", "IT-25", "IT-34", "IT-32", "IT-36", "IT-42", "IT-45", "IT-52", "IT-23"];
   const sud = ["IT-55", "IT-57", "IT-62", "IT_65", "IT-67", "IT-72", "IT-75", "IT-77", "IT-78", "IT-82", "IT-88"];
 
-
-  // --- 2. DIVISIONE SVG E VIEWBOX (INVARIATE) ---
-  
   document.querySelectorAll('path').forEach(path => {
     const id = path.getAttribute('id');
     if (nord.includes(id)) svgNord.appendChild(path);
@@ -568,12 +561,12 @@ document.addEventListener('DOMContentLoaded', function () {
   autoSetViewBox(svgNord);
   autoSetViewBox(svgSud);
 
-  // --- 3. GESTIONE EVENTI (TOOLTIP E CLICK) ---
+  // --- 2. GESTIONE EVENTI (TOOLTIP E CLICK) ---
 
   document.querySelectorAll('path').forEach(path => {
     const regionId = path.getAttribute('id');
     
-    // Logica Tooltip
+    // Logica Tooltip (invariata)
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
       path.addEventListener('mousemove', event => {
         const title = path.getAttribute('title'); 
@@ -584,7 +577,6 @@ document.addEventListener('DOMContentLoaded', function () {
           tooltip.style.top = (event.pageY + 10) + 'px';
         }
       });
-
       path.addEventListener('mouseleave', () => {
         if (tooltip) {
           tooltip.style.display = 'none';
@@ -593,7 +585,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // --- LOGICA CLICK (che ora funzionerà) ---
+    // --- LOGICA CLICK (NUOVA COMUNICAZIONE) ---
     path.addEventListener('click', () => {
       let targetUrl = null;
 
@@ -606,9 +598,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (targetUrl) {
         if (targetUrl.startsWith("http")) {
-          // Questo comando reindirizza la pagina principale (Wix)
-          // e ora funzionerà grazie al 'sandbox'
-          window.top.location.href = targetUrl;
+          // *** INVIA IL COMANDO AL GENITORE (WIX) ***
+          console.log('Comando di reindirizzamento inviato a Wix:', targetUrl);
+          parent.postMessage({ 
+            type: 'mapRedirect', 
+            url: targetUrl 
+          }, 'https://speranzaperognicasa.wixstudio.com'); // Specificare l'origine Wix
         } else {
           console.warn('URL per Centro-Sud non ancora impostato.');
         }
