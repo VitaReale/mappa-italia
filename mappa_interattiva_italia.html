@@ -499,11 +499,10 @@ svg, svg * {
         <p>La Valle d'Aosta è la più piccola regione d'Italia, interamente circondata dalle vette più alte delle Alpi (Monte Bianco, Cervino, Monte Rosa). È un paradiso per gli sport invernali e l'alpinismo, arricchito da castelli medievali, terme e una cultura alpina unica.</p>
     </div>
 <script>
-
-  window.addEventListener('message', function(event) {
+// Listener per click da mobile (Wix) - INVARIATO
+window.addEventListener('message', function(event) {
   if (event.data?.type === 'clickForward') {
     const { x, y } = event.data;
-
     // Simula un click nella posizione ricevuta
     const target = document.elementFromPoint(x, y);
     if (target) {
@@ -516,24 +515,24 @@ svg, svg * {
   }
 });
 
-    function autoSetViewBox(svg) {
-    const paths = svg.querySelectorAll('path');
-    if (paths.length === 0) return;
+// Funzione per impostare il viewBox - INVARIATA
+function autoSetViewBox(svg) {
+  const paths = svg.querySelectorAll('path');
+  if (paths.length === 0) return;
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  paths.forEach(p => {
+    const box = p.getBBox();
+    minX = Math.min(minX, box.x);
+    minY = Math.min(minY, box.y);
+    maxX = Math.max(maxX, box.x + box.width);
+    maxY = Math.max(maxY, box.y + box.height);
+  });
+  const width = maxX - minX;
+  const height = maxY - minY;
+  svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
+}
 
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    paths.forEach(p => {
-      const box = p.getBBox();
-      minX = Math.min(minX, box.x);
-      minY = Math.min(minY, box.y);
-      maxX = Math.max(maxX, box.x + box.width);
-      maxY = Math.max(maxY, box.y + box.height);
-    });
-    const width = maxX - minX;
-    const height = maxY - minY;
-    svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
-  }
-
-    // Blocca trascinamento accidentale su touch
+// Blocca trascinamento accidentale su touch - INVARIATO
 document.addEventListener('touchmove', function(e) {
   if (e.target.closest('svg')) {
     e.preventDefault();
@@ -541,95 +540,101 @@ document.addEventListener('touchmove', function(e) {
 }, { passive: false });
   
 document.addEventListener('DOMContentLoaded', function () {
+  
+  // --- 1. IMPOSTAZIONI URL E REGIONI (MODIFICATE) ---
+  
+  // Definisci i link di destinazione
+  const urlNord = "https://shop.vitareale.org";
+  const urlCentroSud = "INSERISCI_QUI_IL_LINK_PER_IL_CENTRO_SUD"; // <-- MODIFICA QUI
+
+  // Variabili SVG e Tooltip (dal tuo script)
   const svgNord = document.getElementById('svgNord');
   const svgSud = document.getElementById('svgSud');
   const tooltip = document.getElementById('tooltip');
-  const nordContainer = document.getElementById('regionBoxesContainer-nord');
-  const sudContainer = document.getElementById('regionBoxesContainer-sud');
-  const closeButtons = document.querySelectorAll('.close-button');
+  
+  // Variabili per i box pop-up rimosse (non più necessarie)
+  // const nordContainer = ...
+  // const sudContainer = ...
+  // const closeButtons = ...
 
+  // Array 'nord' e 'sud' (invariati, presi dal tuo script)
   const nord = ["IT-21", "IT-25", "IT-34", "IT-32", "IT-36", "IT-42", "IT-45", "IT-52", "IT-23"];
   const sud = ["IT-55", "IT-57", "IT-62", "IT_65", "IT-67", "IT-72", "IT-75", "IT-77", "IT-78", "IT-82", "IT-88"];
 
-  let selectedPath = null;
+  // 'selectedPath' rimosso (non più necessario)
 
+  // --- 2. DIVISIONE SVG E VIEWBOX (INVARIATE) ---
+  
+  // Divide le regioni nei due SVG (dal tuo script)
   document.querySelectorAll('path').forEach(path => {
     const id = path.getAttribute('id');
     if (nord.includes(id)) svgNord.appendChild(path);
     else if (sud.includes(id)) svgSud.appendChild(path);
   });
 
+  // Imposta il viewBox per entrambi gli SVG (dal tuo script)
   autoSetViewBox(svgNord);
-autoSetViewBox(svgSud);
+  autoSetViewBox(svgSud);
+
+  // --- 3. GESTIONE EVENTI (TOOLTIP E CLICK) (MODIFICATA) ---
 
   document.querySelectorAll('path').forEach(path => {
     const regionId = path.getAttribute('id');
-    const targetBoxId = `region_${regionId}`;
-    const targetBox = document.getElementById(targetBoxId);
     
-// Blocca mousemove/hover su dispositivi touch
-if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
-  path.addEventListener('mousemove', event => {
-    const title = regionNamesMap[regionId] || path.getAttribute('title');
-    if (tooltip && title) {
-      tooltip.innerHTML = title;
-      tooltip.style.display = 'block';
-      tooltip.style.left = (event.pageX + 10) + 'px';
-      tooltip.style.top = (event.pageY + 10) + 'px';
-    }
-  });
-
-  path.addEventListener('mouseleave', () => {
-    if (tooltip) {
-      tooltip.style.display = 'none';
-      tooltip.innerHTML = '';
-    }
-  });
-}
-
-    path.addEventListener('click', () => {
-      if (!targetBox) return;
-
-      if (!targetBox.parentElement || !targetBox.parentElement.classList.contains('regionBoxesContainer')) {
-        if (nord.includes(regionId)) nordContainer.appendChild(targetBox);
-        else if (sud.includes(regionId)) sudContainer.appendChild(targetBox);
-      }
-
-      document.querySelectorAll('.region-box').forEach(box => {
-        if (box !== targetBox) {
-          box.classList.remove('active');
-          box.style.display = '';
+    // Logica Tooltip (quasi invariata)
+    if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+      path.addEventListener('mousemove', event => {
+        // Sostituito 'regionNamesMap' (che non era definito) con il 'title' del path
+        const title = path.getAttribute('title'); 
+        if (tooltip && title) {
+          tooltip.innerHTML = title;
+          tooltip.style.display = 'block';
+          tooltip.style.left = (event.pageX + 10) + 'px';
+          tooltip.style.top = (event.pageY + 10) + 'px';
         }
       });
 
-      if (selectedPath) selectedPath.classList.remove('selected');
+      path.addEventListener('mouseleave', () => {
+        if (tooltip) {
+          tooltip.style.display = 'none';
+          tooltip.innerHTML = '';
+        }
+      });
+    }
 
-      targetBox.style.display = 'block';
-      void targetBox.offsetWidth;
-      targetBox.classList.add('active');
-      path.classList.add('selected');
-      selectedPath = path;
-    });
-  });
+    // --- LOGICA CLICK SOSTITUITA ---
+    // La vecchia logica che mostrava i box è stata rimossa.
+    path.addEventListener('click', () => {
+      let targetUrl = null;
 
-  closeButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const parentBox = button.closest('.region-box');
-      if (parentBox) {
-        parentBox.classList.remove('active');
-        setTimeout(() => {
-          parentBox.style.display = 'none';
-          if (selectedPath) {
-            const expectedBoxId = `region_${selectedPath.getAttribute('id')}`;
-            if (parentBox.id === expectedBoxId) {
-              selectedPath.classList.remove('selected');
-              selectedPath = null;
-            }
-          }
-        }, 300);
+      // Controlla se l'ID è nel gruppo NORD
+      if (nord.includes(regionId)) {
+        targetUrl = urlNord;
+      } 
+      // Controlla se l'ID è nel gruppo SUD
+      else if (sud.includes(regionId)) {
+        targetUrl = urlCentroSud;
+      }
+
+      // Se abbiamo trovato un URL, reindirizziamo
+      if (targetUrl) {
+        // Controlla che l'URL sia stato impostato
+        if (targetUrl.startsWith("http")) {
+          // Usa window.top.location.href per cambiare l'URL 
+          // della pagina principale (Wix), non solo dell'iframe.
+          window.top.location.href = targetUrl;
+        } else {
+          console.warn('URL per Centro-Sud non ancora impostato.');
+        }
+      } else {
+        // Avviso se un ID cliccabile non è in nessuna lista
+        console.warn('Regione non associata a un link:', regionId);
       }
     });
+    // --- FINE LOGICA CLICK SOSTITUITA ---
   });
+
+  // Blocco 'closeButtons' rimosso (non più necessario)
 });
 </script>
 
