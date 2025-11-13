@@ -506,7 +506,6 @@ svg, svg * {
 window.addEventListener('message', function(event) {
   if (event.data?.type === 'clickForward') {
     const { x, y } = event.data;
-    // Simula un click nella posizione ricevuta
     const target = document.elementFromPoint(x, y);
     if (target) {
       target.dispatchEvent(new MouseEvent('click', {
@@ -546,43 +545,38 @@ document.addEventListener('DOMContentLoaded', function () {
   
   // --- 1. IMPOSTAZIONI URL E REGIONI ---
   
-  // Definisci i link di destinazione
   const urlNord = "https://shop.vitareale.org";
-  const urlCentroSud = "INSERISCI_QUI_IL_LINK_PER_IL_CENTRO_SUD"; // <-- MODIFICA QUI
+  const urlCentroSud = "https://speranzaperognicasa.wixstudio.com/vita-reale/home"; // <-- MODIFICA QUI
 
-  // Variabili SVG e Tooltip (dal tuo script)
   const svgNord = document.getElementById('svgNord');
   const svgSud = document.getElementById('svgSud');
   const tooltip = document.getElementById('tooltip');
 
   // Array 'nord' e 'sud' (dal tuo script)
-  // Assicurati che questi ID corrispondano ESATTAMENTE agli ID nei tuoi <path>
   const nord = ["IT-21", "IT-25", "IT-34", "IT-32", "IT-36", "IT-42", "IT-45", "IT-52", "IT-23"];
   const sud = ["IT-55", "IT-57", "IT-62", "IT_65", "IT-67", "IT-72", "IT-75", "IT-77", "IT-78", "IT-82", "IT-88"];
 
 
   // --- 2. DIVISIONE SVG E VIEWBOX (INVARIATE) ---
   
-  // Divide le regioni nei due SVG (dal tuo script)
   document.querySelectorAll('path').forEach(path => {
     const id = path.getAttribute('id');
     if (nord.includes(id)) svgNord.appendChild(path);
     else if (sud.includes(id)) svgSud.appendChild(path);
   });
 
-  // Imposta il viewBox per entrambi gli SVG (dal tuo script)
   autoSetViewBox(svgNord);
   autoSetViewBox(svgSud);
 
-  // --- 3. GESTIONE EVENTI (TOOLTIP E CLICK) (MODIFICATA) ---
+  // --- 3. GESTIONE EVENTI (TOOLTIP E CLICK) ---
 
   document.querySelectorAll('path').forEach(path => {
     const regionId = path.getAttribute('id');
     
-    // Logica Tooltip (ho rimosso 'regionNamesMap' che non era definito)
+    // Logica Tooltip
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
       path.addEventListener('mousemove', event => {
-        const title = path.getAttribute('title'); // Prende il titolo direttamente dal path
+        const title = path.getAttribute('title'); 
         if (tooltip && title) {
           tooltip.innerHTML = title;
           tooltip.style.display = 'block';
@@ -599,38 +593,31 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // --- NUOVA LOGICA CLICK (SOSTITUITA) ---
+    // --- LOGICA CLICK (che ora funzionerà) ---
     path.addEventListener('click', () => {
       let targetUrl = null;
-      console.log('Click rilevato su:', regionId); // DEBUG
 
-      // Controlla se l'ID è nel gruppo NORD
       if (nord.includes(regionId)) {
         targetUrl = urlNord;
       } 
-      // Controlla se l'ID è nel gruppo SUD
       else if (sud.includes(regionId)) {
         targetUrl = urlCentroSud;
       }
 
-      // Se abbiamo trovato un URL, aprilo in una nuova scheda
       if (targetUrl) {
         if (targetUrl.startsWith("http")) {
-          console.log('Tentativo di apertura (nuova scheda):', targetUrl); // DEBUG
-          // APRE IN UNA NUOVA SCHEDA
-          window.open(targetUrl, '_blank');
+          // Questo comando reindirizza la pagina principale (Wix)
+          // e ora funzionerà grazie al 'sandbox'
+          window.top.location.href = targetUrl;
         } else {
           console.warn('URL per Centro-Sud non ancora impostato.');
         }
       } else {
-        // Avviso se un ID cliccabile non è in nessuna lista
         console.warn('ID non trovato nelle liste nord/sud:', regionId);
       }
     });
-    // --- FINE NUOVA LOGICA CLICK ---
+    // --- FINE LOGICA CLICK ---
   });
-
-  // Tutta la logica per 'closeButtons' è stata rimossa perché non più necessaria
 });
 </script>
 </body>
