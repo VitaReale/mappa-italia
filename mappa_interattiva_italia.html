@@ -501,12 +501,22 @@ svg, svg * {
         <p>La Valle d'Aosta è la più piccola regione d'Italia, interamente circondata dalle vette più alte delle Alpi (Monte Bianco, Cervino, Monte Rosa). È un paradiso per gli sport invernali e l'alpinismo, arricchito da castelli medievali, terme e una cultura alpina unica.</p>
     </div>
 <script>
-// Listener per click da mobile (Wix) - INVARIATO
+// Listener per click da mobile (Wix) - ANCORA NECESSARIO per inoltrare i touch
 window.addEventListener('message', function(event) {
+  // Controlla il tipo di messaggio proveniente dal listener Wix
   if (event.data?.type === 'clickForward') {
     const { x, y } = event.data;
     const target = document.elementFromPoint(x, y);
-    if (target) {
+    
+    // Il target potrebbe essere ora l'elemento <a> che contiene il path
+    if (target && target.closest('a')) {
+      target.closest('a').dispatchEvent(new MouseEvent('click', {
+        bubbles: true,
+        cancelable: true,
+        view: window
+      }));
+    } else if (target) {
+      // Se il target è il path (per sicurezza)
       target.dispatchEvent(new MouseEvent('click', {
         bubbles: true,
         cancelable: true,
@@ -532,6 +542,8 @@ function autoSetViewBox(svg) {
   const height = maxY - minY;
   svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
 }
+
+// Blocca trascinamento accidentale su touch - INVARIATO
 document.addEventListener('touchmove', function(e) {
   if (e.target.closest('svg')) {
     e.preventDefault();
@@ -542,8 +554,9 @@ document.addEventListener('DOMContentLoaded', function () {
   
   // --- 1. IMPOSTAZIONI URL E REGIONI ---
   
+  // Vengono mantenute per la creazione dinamica dei link
   const urlNord = "https://shop.vitareale.org";
-  const urlCentroSud = "https://speranzaperognicasa.wixstudio.com/vita-reale/home"; // <-- MODIFICA QUI
+  const urlCentroSud = "https://speranzaperognicasa.wixstudio.com/vita-reale/home";
 
   const svgNord = document.getElementById('svgNord');
   const svgSud = document.getElementById('svgSud');
@@ -552,23 +565,46 @@ document.addEventListener('DOMContentLoaded', function () {
   const nord = ["IT-21", "IT-25", "IT-34", "IT-32", "IT-36", "IT-42", "IT-45", "IT-52", "IT-23"];
   const sud = ["IT-55", "IT-57", "IT-62", "IT_65", "IT-67", "IT-72", "IT-75", "IT-77", "IT-78", "IT-82", "IT-88"];
 
-  document.querySelectorAll('path').forEach(path => {
-    const id = path.getAttribute('id');
-    if (nord.includes(id)) svgNord.appendChild(path);
-    else if (sud.includes(id)) svgSud.appendChild(path);
-  });
-
-  autoSetViewBox(svgNord);
-  autoSetViewBox(svgSud);
-
-  // --- 2. GESTIONE EVENTI (TOOLTIP E CLICK) ---
-
+  // --- 2. GESTIONE EVENTI E CREAZIONE LINK SVG NATIVI ---
+  
   document.querySelectorAll('path').forEach(path => {
     const regionId = path.getAttribute('id');
+    let targetUrl = null;
+    let svgContainer = null;
+  
+    // 1. Identificazione dell'URL e del contenitore
+    if (nord.includes(regionId)) {
+      targetUrl = urlNord;
+      svgContainer = svgNord;
+    } else if (sud.includes(regionId)) {
+      targetUrl = urlCentroSud;
+      svgContainer = svgSud;
+    } else {
+      // Se non è mappato, inserisci semplicemente il path nel contenitore corretto
+      if (svgNord && nord.includes(regionId)) svgNord.appendChild(path);
+      else if (svgSud && sud.includes(regionId)) svgSud.appendChild(path);
+      return; 
+    }
+  
+    // 2. Creazione dell'elemento Link SVG (<a>)
+    const link = document.createElementNS('http://www.w3.org/2000/svg', 'a');
+    link.setAttribute('href', targetUrl);
     
-    // Logica Tooltip (invariata)
+    // 3. Imposta target="_top" per reindirizzare la pagina Wix
+    link.setAttribute('target', '_top'); 
+
+    // 4. Inserisce il path (la regione) all'interno del link
+    link.appendChild(path);
+    
+    // 5. Aggiunge il link al contenitore SVG appropriato
+    if (svgContainer) {
+        svgContainer.appendChild(link);
+    }
+
+    // --- LOGICA TOOLTIP (Agganciata al link) ---
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
-      path.addEventListener('mousemove', event => {
+      
+      link.addEventListener('mousemove', event => {
         const title = path.getAttribute('title'); 
         if (tooltip && title) {
           tooltip.innerHTML = title;
@@ -577,7 +613,8 @@ document.addEventListener('DOMContentLoaded', function () {
           tooltip.style.top = (event.pageY + 10) + 'px';
         }
       });
-      path.addEventListener('mouseleave', () => {
+
+      link.addEventListener('mouseleave', () => {
         if (tooltip) {
           tooltip.style.display = 'none';
           tooltip.innerHTML = '';
@@ -585,55 +622,13 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-   path.addEventListener('click', () => {
-    let targetUrl = null;
-    const regionId = path.getAttribute('id');
-    
-    // Identificazione dell'URL
-    if (nord.includes(regionId)) {
-        targetUrl = urlNord;
-    } else if (sud.includes(regionId)) {
-        targetUrl = urlCentroSud;
-    }
-
-    if (targetUrl && targetUrl.startsWith("http")) {
-        console.log('Tentativo di reindirizzamento forzato:', targetUrl);
-        
-        // FASE 1: Invia l'URL al genitore (Wix)
-        parent.postMessage({ 
-            type: 'mapRedirect', 
-            url: targetUrl 
-        }, 'https://speranzaperognicasa.wixstudio.com'); 
-        
-        // FASE 2: Prova a usare il metodo che non è un'assegnazione diretta
-        try {
-            // Questo comando crea e attiva un nuovo link
-            const newLink = document.createElement('a');
-            newLink.href = targetUrl;
-            
-            // Questo è il trucco: cliccare il link virtuale
-            // target="_top" dovrebbe forzare la navigazione dell'intera pagina
-            newLink.target = '_top'; 
-            newLink.style.display = 'none';
-            document.body.appendChild(newLink);
-            
-            newLink.click();
-            document.body.removeChild(newLink);
-            
-        } catch (e) {
-            console.error("Fallito il tentativo di link virtuale:", e);
-            // Se fallisce (come purtroppo è probabile), passiamo alla FASE 3
-            
-            // FASE 3: Fallback finale (dovrebbe aprirsi in nuova scheda se FASE 1 fallisce)
-            window.open(targetUrl, '_blank');
-        }
-
-    } else {
-        console.warn('ID non trovato o URL Centro-Sud mancante:', regionId);
-    }
-});
-    // --- FINE LOGICA CLICK ---
+    // Nota: Il path.addEventListener('click', ...) è stato rimosso. 
+    // La navigazione è gestita dal link nativo.
   });
+
+  // --- 3. FINALIZZAZIONE SVG ---
+  autoSetViewBox(svgNord);
+  autoSetViewBox(svgSud);
 });
 </script>
 </body>
