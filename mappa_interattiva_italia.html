@@ -627,6 +627,13 @@ document.addEventListener('DOMContentLoaded', function () {
   autoSetViewBox(svgNord);
   autoSetViewBox(svgSud);
 });
+
+  // Blocca trascinamento accidentale su touch - RIPRISTINATO
+document.addEventListener('touchmove', function(e) {
+  if (e.target.closest('svg')) {
+    e.preventDefault();
+  }
+}, { passive: false });
 </script>
 </body>
 </html>
