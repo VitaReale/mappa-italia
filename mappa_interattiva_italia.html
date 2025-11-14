@@ -501,30 +501,34 @@ svg, svg * {
         <p>La Valle d'Aosta è la più piccola regione d'Italia, interamente circondata dalle vette più alte delle Alpi (Monte Bianco, Cervino, Monte Rosa). È un paradiso per gli sport invernali e l'alpinismo, arricchito da castelli medievali, terme e una cultura alpina unica.</p>
     </div>
 <script>
-// Listener per click da mobile (Wix) - VERSIONE AGGIORNATA
+// Listener per click da mobile (Wix) - VERSIONE ULTRA-PULITA
 window.addEventListener('message', function(event) {
   // Controlla il tipo di messaggio proveniente dal listener Wix
   if (event.data?.type === 'clickForward') {
     const { x, y } = event.data;
     const target = document.elementFromPoint(x, y);
     
-    // Trova l'elemento link nativo (<a>)
+    // 1. Trova l'elemento link nativo (<a>)
     const linkElement = target ? target.closest('a') : null;
     
     if (linkElement) {
-        // SU MOBILE: NON SIMULIAMO IL CLICK (che viene bloccato), 
-        // USIAMO IL LINK REALE PER FORZARE L'APERTURA DELLA PAGINA WIX.
         const targetUrl = linkElement.getAttribute('href');
+        
+        // 2. ANZICHÉ SIMULARE UN CLICK, FORZIAMO LA NAVIGAZIONE DI WINDOW.TOP
+        // Nota: Qui usiamo window.top.location.href. Questo è l'UNICO MODO 
+        // per reagire al postMessage su mobile, anche se dà l'errore in console, 
+        // a volte funziona proprio perché è l'azione finale.
         
         if (linkElement.getAttribute('target') === '_top') {
              // Reindirizzamento della pagina Wix.
-             // Non è un'azione utente diretta, ma a volte funziona se si bypassa la simulazione.
              window.top.location.href = targetUrl;
         } else {
-             // Altrimenti, usa il link normale
+             // Fallback
              window.location.href = targetUrl;
         }
     }
+    
+    // Non facciamo nulla su desktop perché lì la navigazione deve essere nativa.
   }
 });
 
