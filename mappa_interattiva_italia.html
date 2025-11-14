@@ -585,32 +585,53 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // --- LOGICA CLICK (NUOVA COMUNICAZIONE) ---
-    path.addEventListener('click', () => {
-      let targetUrl = null;
-
-      if (nord.includes(regionId)) {
+   path.addEventListener('click', () => {
+    let targetUrl = null;
+    const regionId = path.getAttribute('id');
+    
+    // Identificazione dell'URL
+    if (nord.includes(regionId)) {
         targetUrl = urlNord;
-      } 
-      else if (sud.includes(regionId)) {
+    } else if (sud.includes(regionId)) {
         targetUrl = urlCentroSud;
-      }
+    }
 
-      if (targetUrl) {
-        if (targetUrl.startsWith("http")) {
-          // *** INVIA IL COMANDO AL GENITORE (WIX) ***
-          console.log('Comando di reindirizzamento inviato a Wix:', targetUrl);
-          parent.postMessage({ 
+    if (targetUrl && targetUrl.startsWith("http")) {
+        console.log('Tentativo di reindirizzamento forzato:', targetUrl);
+        
+        // FASE 1: Invia l'URL al genitore (Wix)
+        parent.postMessage({ 
             type: 'mapRedirect', 
             url: targetUrl 
-          }, 'https://speranzaperognicasa.wixstudio.com'); // Specificare l'origine Wix
-        } else {
-          console.warn('URL per Centro-Sud non ancora impostato.');
+        }, 'https://speranzaperognicasa.wixstudio.com'); 
+        
+        // FASE 2: Prova a usare il metodo che non è un'assegnazione diretta
+        try {
+            // Questo comando crea e attiva un nuovo link
+            const newLink = document.createElement('a');
+            newLink.href = targetUrl;
+            
+            // Questo è il trucco: cliccare il link virtuale
+            // target="_top" dovrebbe forzare la navigazione dell'intera pagina
+            newLink.target = '_top'; 
+            newLink.style.display = 'none';
+            document.body.appendChild(newLink);
+            
+            newLink.click();
+            document.body.removeChild(newLink);
+            
+        } catch (e) {
+            console.error("Fallito il tentativo di link virtuale:", e);
+            // Se fallisce (come purtroppo è probabile), passiamo alla FASE 3
+            
+            // FASE 3: Fallback finale (dovrebbe aprirsi in nuova scheda se FASE 1 fallisce)
+            window.open(targetUrl, '_blank');
         }
-      } else {
-        console.warn('ID non trovato nelle liste nord/sud:', regionId);
-      }
-    });
+
+    } else {
+        console.warn('ID non trovato o URL Centro-Sud mancante:', regionId);
+    }
+});
     // --- FINE LOGICA CLICK ---
   });
 });
