@@ -514,12 +514,10 @@ window.addEventListener('message', function(event) {
     if (linkElement) {
         const targetUrl = linkElement.getAttribute('href');
         
-        // 🛑 SU MOBILE: NON SIMULIAMO IL CLICK E NON REINDIRIZZIAMO LA PAGINA CORRENTE
-        // 🛑 Usiamo l'unica azione JS permessa per reagire al postMessage: aprire una NUOVA SCHEDA
+        // 🛑 SU MOBILE: UTILIZZIAMO L'AZIONE GARANTITA: APRIRE UNA NUOVA SCHEDA
         window.open(targetUrl, '_blank');
         
-        // Impediamo al browser di eseguire l'azione nativa del link, dato che l'abbiamo gestita noi.
-        // Questo è necessario solo se il browser esegue l'evento click simulato.
+        // Impediamo qualsiasi altra azione (es. la navigazione nativa del browser)
         event.preventDefault(); 
     }
   }
@@ -553,7 +551,6 @@ document.addEventListener('DOMContentLoaded', function () {
   
   // --- 1. IMPOSTAZIONI URL E REGIONI ---
   
-  // Vengono mantenute per la creazione dinamica dei link
   const urlNord = "https://shop.vitareale.org";
   const urlCentroSud = "https://speranzaperognicasa.wixstudio.com/vita-reale/home";
 
@@ -589,8 +586,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const link = document.createElementNS('http://www.w3.org/2000/svg', 'a');
     link.setAttribute('href', targetUrl);
     
-    // 3. Imposta target="_top" per reindirizzare la pagina Wix
-    link.setAttribute('target', '_top'); 
+    // 3. 🎯 IMPOSTAZIONE FINALE: target="_blank" per eliminare l'errore di navigazione
+    link.setAttribute('target', '_blank'); 
 
     // 4. Inserisce il path (la regione) all'interno del link
     link.appendChild(path);
@@ -621,8 +618,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // Nota: Il path.addEventListener('click', ...) è stato rimosso. 
-    // La navigazione è gestita dal link nativo.
+    // Nota: I vecchi listener di click JavaScript sono stati rimossi.
   });
 
   // --- 3. FINALIZZAZIONE SVG ---
