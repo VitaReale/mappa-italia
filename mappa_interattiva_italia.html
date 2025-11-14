@@ -518,7 +518,7 @@ window.addEventListener('message', function(event) {
         }
         
         // 2. Esegui l'azione (apertura nuova scheda)
-        window.open(targetUrl, '_blank');
+        window.open(targetUrl, 'mapWindow');
         
         // 3. Rimuovi feedback visivo dopo un breve ritardo per simulare l'animazione
         setTimeout(() => {
@@ -548,13 +548,6 @@ function autoSetViewBox(svg) {
   const height = maxY - minY;
   svg.setAttribute('viewBox', `${minX} ${minY} ${width} ${height}`);
 }
-
-// Blocca trascinamento accidentale su touch - INVARIATO
-document.addEventListener('touchmove', function(e) {
-  if (e.target.closest('svg')) {
-    e.preventDefault();
-  }
-}, { passive: false });
   
 document.addEventListener('DOMContentLoaded', function () {
   
@@ -596,7 +589,7 @@ document.addEventListener('DOMContentLoaded', function () {
     link.setAttribute('href', targetUrl);
     
     // 3. 🎯 IMPOSTAZIONE FINALE: target="_blank" per eliminare l'errore di navigazione
-    link.setAttribute('target', '_blank'); 
+    link.setAttribute('target', 'mapWindow'); 
 
     // 4. Inserisce il path (la regione) all'interno del link
     link.appendChild(path);
