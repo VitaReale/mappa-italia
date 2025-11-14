@@ -501,37 +501,30 @@ svg, svg * {
         <p>La Valle d'Aosta è la più piccola regione d'Italia, interamente circondata dalle vette più alte delle Alpi (Monte Bianco, Cervino, Monte Rosa). È un paradiso per gli sport invernali e l'alpinismo, arricchito da castelli medievali, terme e una cultura alpina unica.</p>
     </div>
 <script>
-// Listener per click da mobile (Wix) - VERSIONE ULTRA-PULITA
+// Listener per click da mobile (Wix) - VERSIONE FINALE PER APERTURA NUOVA SCHEDA
 window.addEventListener('message', function(event) {
   // Controlla il tipo di messaggio proveniente dal listener Wix
   if (event.data?.type === 'clickForward') {
     const { x, y } = event.data;
     const target = document.elementFromPoint(x, y);
     
-    // 1. Trova l'elemento link nativo (<a>)
+    // Trova l'elemento link nativo (<a>)
     const linkElement = target ? target.closest('a') : null;
     
     if (linkElement) {
         const targetUrl = linkElement.getAttribute('href');
         
-        // 2. ANZICHÉ SIMULARE UN CLICK, FORZIAMO LA NAVIGAZIONE DI WINDOW.TOP
-        // Nota: Qui usiamo window.top.location.href. Questo è l'UNICO MODO 
-        // per reagire al postMessage su mobile, anche se dà l'errore in console, 
-        // a volte funziona proprio perché è l'azione finale.
+        // 🛑 SU MOBILE: NON SIMULIAMO IL CLICK E NON REINDIRIZZIAMO LA PAGINA CORRENTE
+        // 🛑 Usiamo l'unica azione JS permessa per reagire al postMessage: aprire una NUOVA SCHEDA
+        window.open(targetUrl, '_blank');
         
-        if (linkElement.getAttribute('target') === '_top') {
-             // Reindirizzamento della pagina Wix.
-             window.top.location.href = targetUrl;
-        } else {
-             // Fallback
-             window.location.href = targetUrl;
-        }
+        // Impediamo al browser di eseguire l'azione nativa del link, dato che l'abbiamo gestita noi.
+        // Questo è necessario solo se il browser esegue l'evento click simulato.
+        event.preventDefault(); 
     }
-    
-    // Non facciamo nulla su desktop perché lì la navigazione deve essere nativa.
   }
 });
-
+  
 // Funzioni utility - INVARIANTI
 function autoSetViewBox(svg) {
   const paths = svg.querySelectorAll('path');
